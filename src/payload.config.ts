@@ -81,6 +81,8 @@ export default buildConfig({
             rejectUnauthorized: false,
           },
     },
+    // Disable push mode in production to force migrations
+    push: process.env.NODE_ENV !== 'production',
   }),
   // Force migrations in production to avoid dev mode warnings
   ...(process.env.NODE_ENV === 'production' && {

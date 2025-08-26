@@ -41,6 +41,7 @@ const nextConfig = {
   // Handle database access during build
   env: {
     PAYLOAD_PUBLIC_SERVER_URL: NEXT_PUBLIC_SERVER_URL,
+    NODE_ENV: process.env.NODE_ENV || 'production',
   },
 }
 
