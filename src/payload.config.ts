@@ -7,12 +7,21 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { CommonCoreStateStandards } from './collections/CommonCoreStateStandards'
+import { ConceptCommonCoreStateStandards } from './collections/ConceptCommonCoreStateStandards'
+import { Concepts } from './collections/Concepts'
+import { EssentialQuestions } from './collections/EssentialQuestions'
 import { Grades } from './collections/Grades'
+import { KidTranslations } from './collections/KidTranslations'
+import { LearningOutcomes } from './collections/LearningOutcomes'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { Skills } from './collections/Skills'
 import { StandardTypes } from './collections/StandardTypes'
+import { Strategies } from './collections/Strategies'
 import { Subjects } from './collections/Subjects'
+import { UniversalQuestions } from './collections/UniversalQuestions'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -70,7 +79,25 @@ export default buildConfig({
       },
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Grades, Subjects, StandardTypes],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Users,
+    Grades,
+    Subjects,
+    StandardTypes,
+    Concepts,
+    CommonCoreStateStandards,
+    LearningOutcomes,
+    ConceptCommonCoreStateStandards,
+    EssentialQuestions,
+    Skills,
+    UniversalQuestions,
+    Strategies,
+    KidTranslations,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
