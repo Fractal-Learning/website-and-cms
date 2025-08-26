@@ -72,6 +72,9 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    grades: Grade;
+    subjects: Subject;
+    'standard-types': StandardType;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -88,6 +91,9 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    grades: GradesSelect<false> | GradesSelect<true>;
+    subjects: SubjectsSelect<false> | SubjectsSelect<true>;
+    'standard-types': StandardTypesSelect<false> | StandardTypesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -736,6 +742,101 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grades".
+ */
+export interface Grade {
+  id: number;
+  /**
+   * Grade level (K, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+   */
+  level: string;
+  /**
+   * Full grade name (e.g., "Kindergarten", "First Grade", "Sixth Grade")
+   */
+  name: string;
+  /**
+   * Numeric order for sorting (0 for K, 1 for 1st grade, etc.)
+   */
+  sort_order: number;
+  /**
+   * Whether this grade level is currently active
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subjects".
+ */
+export interface Subject {
+  id: number;
+  /**
+   * Subject name (e.g., "Mathematics", "English Language Arts")
+   */
+  name: string;
+  /**
+   * Short abbreviation (e.g., "Math", "ELA", "Science")
+   */
+  abbreviation: string;
+  /**
+   * Subject code for standards (e.g., "RL", "RF", "NBT")
+   */
+  code?: string | null;
+  /**
+   * Detailed description of the subject area
+   */
+  description?: string | null;
+  /**
+   * Hex color code for UI display (e.g., "#3B82F6")
+   */
+  display_color?: string | null;
+  /**
+   * Numeric order for sorting subjects
+   */
+  sort_order?: number | null;
+  /**
+   * Whether this subject is currently active
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "standard-types".
+ */
+export interface StandardType {
+  id: number;
+  /**
+   * Standard type name (e.g., "Reading Literature", "Number & Operations")
+   */
+  name: string;
+  /**
+   * Standard type abbreviation (e.g., "RL", "NBT", "OA")
+   */
+  abbreviation: string;
+  /**
+   * The subject this standard type belongs to
+   */
+  subject: number | Subject;
+  /**
+   * Detailed description of this standard type
+   */
+  description?: string | null;
+  /**
+   * Numeric order for sorting within the subject
+   */
+  sort_order?: number | null;
+  /**
+   * Whether this standard type is currently active
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -926,6 +1027,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'grades';
+        value: number | Grade;
+      } | null)
+    | ({
+        relationTo: 'subjects';
+        value: number | Subject;
+      } | null)
+    | ({
+        relationTo: 'standard-types';
+        value: number | StandardType;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1290,6 +1403,47 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grades_select".
+ */
+export interface GradesSelect<T extends boolean = true> {
+  level?: T;
+  name?: T;
+  sort_order?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subjects_select".
+ */
+export interface SubjectsSelect<T extends boolean = true> {
+  name?: T;
+  abbreviation?: T;
+  code?: T;
+  description?: T;
+  display_color?: T;
+  sort_order?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "standard-types_select".
+ */
+export interface StandardTypesSelect<T extends boolean = true> {
+  name?: T;
+  abbreviation?: T;
+  subject?: T;
+  description?: T;
+  sort_order?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
