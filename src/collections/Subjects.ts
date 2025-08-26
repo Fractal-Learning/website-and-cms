@@ -13,7 +13,7 @@ export const Subjects: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'abbreviation', 'active', 'updatedAt'],
+    defaultColumns: ['name', 'tag', 'active', 'updatedAt'],
   },
   fields: [
     {
@@ -26,20 +26,12 @@ export const Subjects: CollectionConfig = {
       },
     },
     {
-      name: 'abbreviation',
+      name: 'tag',
       type: 'text',
       required: true,
       unique: true,
       admin: {
-        description: 'Short abbreviation (e.g., "Math", "ELA", "Science")',
-      },
-    },
-    {
-      name: 'code',
-      type: 'text',
-      unique: true,
-      admin: {
-        description: 'Subject code for standards (e.g., "RL", "RF", "NBT")',
+        description: 'Short tag (e.g., "Math", "ELA", "Science")',
       },
     },
     {

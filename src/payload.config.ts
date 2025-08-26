@@ -1,5 +1,6 @@
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -73,10 +74,18 @@ export default buildConfig({
   editor: defaultLexical,
   db: vercelPostgresAdapter({
     pool: {
-      connectionString: `${process.env.POSTGRES_URL || ''}${process.env.POSTGRES_URL?.includes('?') ? '&' : '?'}sslmode=require&sslaccept=strict`,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      connectionString: process.env.POSTGRES_URL || '',
+      ssl: process.env.POSTGRES_URL?.includes('localhost')
+        ? false
+        : {
+            rejectUnauthorized: false,
+          },
+    },
+  }),
+  // Force migrations in production to avoid dev mode warnings
+  ...(process.env.NODE_ENV === 'production' && {
+    migrations: {
+      auto: true,
     },
   }),
   collections: [
@@ -85,9 +94,9 @@ export default buildConfig({
     Media,
     Categories,
     Users,
-    Grades,
     Subjects,
     StandardTypes,
+    Grades,
     Concepts,
     CommonCoreStateStandards,
     LearningOutcomes,
@@ -114,6 +123,14 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  // Add email configuration
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
+        apiKey: process.env.RESEND_API_KEY,
+        defaultFromAddress: 'noreply@fractallearning.com',
+        defaultFromName: 'Fractal Learning',
+      })
+    : undefined,
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {

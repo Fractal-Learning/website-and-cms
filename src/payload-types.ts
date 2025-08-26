@@ -72,9 +72,9 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
-    grades: Grade;
     subjects: Subject;
     'standard-types': StandardType;
+    grades: Grade;
     concepts: Concept;
     'common-core-state-standards': CommonCoreStateStandard;
     'learning-outcomes': LearningOutcome;
@@ -100,9 +100,9 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    grades: GradesSelect<false> | GradesSelect<true>;
     subjects: SubjectsSelect<false> | SubjectsSelect<true>;
     'standard-types': StandardTypesSelect<false> | StandardTypesSelect<true>;
+    grades: GradesSelect<false> | GradesSelect<true>;
     concepts: ConceptsSelect<false> | ConceptsSelect<true>;
     'common-core-state-standards': CommonCoreStateStandardsSelect<false> | CommonCoreStateStandardsSelect<true>;
     'learning-outcomes': LearningOutcomesSelect<false> | LearningOutcomesSelect<true>;
@@ -760,31 +760,6 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "grades".
- */
-export interface Grade {
-  id: number;
-  /**
-   * Grade level (K, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
-   */
-  level: string;
-  /**
-   * Full grade name (e.g., "Kindergarten", "First Grade", "Sixth Grade")
-   */
-  name: string;
-  /**
-   * Numeric order for sorting (0 for K, 1 for 1st grade, etc.)
-   */
-  sort_order: number;
-  /**
-   * Whether this grade level is currently active
-   */
-  active?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subjects".
  */
 export interface Subject {
@@ -794,13 +769,9 @@ export interface Subject {
    */
   name: string;
   /**
-   * Short abbreviation (e.g., "Math", "ELA", "Science")
+   * Short tag (e.g., "Math", "ELA", "Science")
    */
-  abbreviation: string;
-  /**
-   * Subject code for standards (e.g., "RL", "RF", "NBT")
-   */
-  code?: string | null;
+  tag: string;
   /**
    * Detailed description of the subject area
    */
@@ -848,6 +819,31 @@ export interface StandardType {
   sort_order?: number | null;
   /**
    * Whether this standard type is currently active
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grades".
+ */
+export interface Grade {
+  id: number;
+  /**
+   * Grade level (K, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+   */
+  level: string;
+  /**
+   * Full grade name (e.g., "Kindergarten", "First Grade", "Sixth Grade")
+   */
+  name: string;
+  /**
+   * Numeric order for sorting (0 for K, 1 for 1st grade, etc.)
+   */
+  sort_order: number;
+  /**
+   * Whether this grade level is currently active
    */
   active?: boolean | null;
   updatedAt: string;
@@ -1573,16 +1569,16 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'grades';
-        value: number | Grade;
-      } | null)
-    | ({
         relationTo: 'subjects';
         value: number | Subject;
       } | null)
     | ({
         relationTo: 'standard-types';
         value: number | StandardType;
+      } | null)
+    | ({
+        relationTo: 'grades';
+        value: number | Grade;
       } | null)
     | ({
         relationTo: 'concepts';
@@ -1986,24 +1982,11 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "grades_select".
- */
-export interface GradesSelect<T extends boolean = true> {
-  level?: T;
-  name?: T;
-  sort_order?: T;
-  active?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subjects_select".
  */
 export interface SubjectsSelect<T extends boolean = true> {
   name?: T;
-  abbreviation?: T;
-  code?: T;
+  tag?: T;
   description?: T;
   display_color?: T;
   sort_order?: T;
@@ -2020,6 +2003,18 @@ export interface StandardTypesSelect<T extends boolean = true> {
   abbreviation?: T;
   subject?: T;
   description?: T;
+  sort_order?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grades_select".
+ */
+export interface GradesSelect<T extends boolean = true> {
+  level?: T;
+  name?: T;
   sort_order?: T;
   active?: T;
   updatedAt?: T;
