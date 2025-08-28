@@ -32,24 +32,16 @@ const nextConfig = {
   reactStrictMode: true,
   redirects,
   // Add build configuration for PayloadCMS
-  experimental: {
-    // Enable server components
-    serverComponentsExternalPackages: ['payload'],
-  },
+  serverExternalPackages: ['payload'],
   // Configure build output
   output: 'standalone',
-  // Handle database access during build
-  env: {
-    PAYLOAD_PUBLIC_SERVER_URL: NEXT_PUBLIC_SERVER_URL,
-    NODE_ENV: process.env.NODE_ENV || 'production',
-  },
 }
 
-export default withPayload(nextConfig, { 
+export default withPayload(nextConfig, {
   devBundleServerPackages: false,
   // Configure build-time behavior
   buildOptions: {
     // Disable static generation for dynamic routes during build
     disableStaticGeneration: true,
-  }
+  },
 })
