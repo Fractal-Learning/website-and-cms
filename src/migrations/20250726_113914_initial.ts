@@ -26,15 +26,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__pages_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum_posts_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__posts_v_version_status" AS ENUM('draft', 'published');
-  CREATE TYPE "public"."enum_learning_outcomes_assessment_type" AS ENUM('formative', 'summative', 'diagnostic', 'benchmark');
-  CREATE TYPE "public"."enum_learning_outcomes_difficulty_level" AS ENUM('beginner', 'intermediate', 'advanced');
-  CREATE TYPE "public"."enum_concept_common_core_state_standards_alignment_strength" AS ENUM('strong', 'moderate', 'weak');
-  CREATE TYPE "public"."enum_skills_difficulty_level" AS ENUM('beginner', 'intermediate', 'advanced', 'expert');
-  CREATE TYPE "public"."enum_universal_questions_question_type" AS ENUM('open_ended', 'reflective', 'analytical', 'evaluative', 'creative');
-  CREATE TYPE "public"."enum_strategies_strategy_type" AS ENUM('individual', 'pair', 'small_group', 'whole_class', 'independent');
-  CREATE TYPE "public"."enum_strategies_difficulty_level" AS ENUM('beginner', 'intermediate', 'advanced');
-  CREATE TYPE "public"."enum_kid_translations_grade_level" AS ENUM('k_2', '3_5', '6_8', '9_12');
-  CREATE TYPE "public"."enum_kid_translations_reading_level" AS ENUM('pre_k', 'k', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12');
   CREATE TYPE "public"."enum_redirects_to_type" AS ENUM('reference', 'custom');
   CREATE TYPE "public"."enum_forms_confirmation_type" AS ENUM('message', 'redirect');
   CREATE TYPE "public"."enum_payload_jobs_log_task_slug" AS ENUM('inline', 'schedulePublish');
@@ -451,202 +442,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"lock_until" timestamp(3) with time zone
   );
   
-  CREATE TABLE "subjects" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"name" varchar NOT NULL,
-  	"tag" varchar NOT NULL,
-  	"description" varchar,
-  	"display_color" varchar,
-  	"sort_order" numeric,
-  	"active" boolean DEFAULT true,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "standard_types" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"name" varchar NOT NULL,
-  	"abbreviation" varchar NOT NULL,
-  	"subject_id" integer NOT NULL,
-  	"description" varchar,
-  	"sort_order" numeric,
-  	"active" boolean DEFAULT true,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "grades" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"level" varchar NOT NULL,
-  	"name" varchar NOT NULL,
-  	"sort_order" numeric NOT NULL,
-  	"active" boolean DEFAULT true,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "concepts" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"title" varchar NOT NULL,
-  	"overview" jsonb NOT NULL,
-  	"active" boolean DEFAULT true,
-  	"metadata" jsonb,
-  	"slug" varchar,
-  	"slug_lock" boolean DEFAULT true,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "concepts_rels" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"order" integer,
-  	"parent_id" integer NOT NULL,
-  	"path" varchar NOT NULL,
-  	"subjects_id" integer
-  );
-  
-  CREATE TABLE "common_core_state_standards" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"code" varchar NOT NULL,
-  	"statement" jsonb NOT NULL,
-  	"subject_id" integer NOT NULL,
-  	"grade_id" integer NOT NULL,
-  	"standard_type_id" integer NOT NULL,
-  	"domain" varchar,
-  	"metadata" jsonb,
-  	"active" boolean DEFAULT true,
-  	"notes" varchar,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "learning_outcomes" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"statement" jsonb NOT NULL,
-  	"concept_id" integer NOT NULL,
-  	"success_criteria" jsonb,
-  	"assessment_type" "enum_learning_outcomes_assessment_type" DEFAULT 'formative' NOT NULL,
-  	"sort" numeric DEFAULT 0,
-  	"active" boolean DEFAULT true,
-  	"estimated_duration_minutes" numeric,
-  	"difficulty_level" "enum_learning_outcomes_difficulty_level",
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "concept_common_core_state_standards" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"concept_id" integer NOT NULL,
-  	"common_core_standard_id" integer NOT NULL,
-  	"notes" varchar,
-  	"alignment_strength" "enum_concept_common_core_state_standards_alignment_strength" DEFAULT 'strong',
-  	"active" boolean DEFAULT true,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "essential_questions" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"question" varchar NOT NULL,
-  	"learning_outcome_id" integer NOT NULL,
-  	"sort" numeric DEFAULT 0,
-  	"active" boolean DEFAULT true,
-  	"context" varchar,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "skills" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"name" varchar NOT NULL,
-  	"essential_question_id" integer NOT NULL,
-  	"big_idea" jsonb NOT NULL,
-  	"sort" numeric DEFAULT 0,
-  	"active" boolean DEFAULT true,
-  	"difficulty_level" "enum_skills_difficulty_level" DEFAULT 'beginner',
-  	"estimated_hours" numeric,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "skills_rels" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"order" integer,
-  	"parent_id" integer NOT NULL,
-  	"path" varchar NOT NULL,
-  	"skills_id" integer
-  );
-  
-  CREATE TABLE "universal_questions_suggested_followups" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"followup_question" varchar NOT NULL
-  );
-  
-  CREATE TABLE "universal_questions" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"question" varchar NOT NULL,
-  	"skill_id" integer NOT NULL,
-  	"sort" numeric DEFAULT 0,
-  	"active" boolean DEFAULT true,
-  	"question_type" "enum_universal_questions_question_type" DEFAULT 'open_ended',
-  	"context" varchar,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "strategies_materials_needed" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"material" varchar NOT NULL
-  );
-  
-  CREATE TABLE "strategies" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"name" varchar NOT NULL,
-  	"skill_id" integer NOT NULL,
-  	"description" jsonb NOT NULL,
-  	"estimated_minutes" numeric NOT NULL,
-  	"sort" numeric DEFAULT 0,
-  	"active" boolean DEFAULT true,
-  	"strategy_type" "enum_strategies_strategy_type" DEFAULT 'individual',
-  	"difficulty_level" "enum_strategies_difficulty_level" DEFAULT 'beginner',
-  	"instructions" jsonb,
-  	"assessment_method" varchar,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "kid_translations_vocabulary_support" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"term" varchar NOT NULL,
-  	"definition" varchar NOT NULL
-  );
-  
-  CREATE TABLE "kid_translations_examples" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"example" varchar NOT NULL
-  );
-  
-  CREATE TABLE "kid_translations" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"strategy_id" integer NOT NULL,
-  	"translation" jsonb NOT NULL,
-  	"grade_level" "enum_kid_translations_grade_level" DEFAULT 'k_2',
-  	"active" boolean DEFAULT true,
-  	"motivational_message" varchar,
-  	"success_criteria_kid_friendly" jsonb,
-  	"reading_level" "enum_kid_translations_reading_level",
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
   CREATE TABLE "redirects" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"from" varchar NOT NULL,
@@ -898,18 +693,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"media_id" integer,
   	"categories_id" integer,
   	"users_id" integer,
-  	"subjects_id" integer,
-  	"standard_types_id" integer,
-  	"grades_id" integer,
-  	"concepts_id" integer,
-  	"common_core_state_standards_id" integer,
-  	"learning_outcomes_id" integer,
-  	"concept_common_core_state_standards_id" integer,
-  	"essential_questions_id" integer,
-  	"skills_id" integer,
-  	"universal_questions_id" integer,
-  	"strategies_id" integer,
-  	"kid_translations_id" integer,
   	"redirects_id" integer,
   	"forms_id" integer,
   	"form_submissions_id" integer,
@@ -1043,26 +826,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "categories_breadcrumbs" ADD CONSTRAINT "categories_breadcrumbs_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "categories" ADD CONSTRAINT "categories_parent_id_categories_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."categories"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "users_sessions" ADD CONSTRAINT "users_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "standard_types" ADD CONSTRAINT "standard_types_subject_id_subjects_id_fk" FOREIGN KEY ("subject_id") REFERENCES "public"."subjects"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "concepts_rels" ADD CONSTRAINT "concepts_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."concepts"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "concepts_rels" ADD CONSTRAINT "concepts_rels_subjects_fk" FOREIGN KEY ("subjects_id") REFERENCES "public"."subjects"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "common_core_state_standards" ADD CONSTRAINT "common_core_state_standards_subject_id_subjects_id_fk" FOREIGN KEY ("subject_id") REFERENCES "public"."subjects"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "common_core_state_standards" ADD CONSTRAINT "common_core_state_standards_grade_id_grades_id_fk" FOREIGN KEY ("grade_id") REFERENCES "public"."grades"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "common_core_state_standards" ADD CONSTRAINT "common_core_state_standards_standard_type_id_standard_types_id_fk" FOREIGN KEY ("standard_type_id") REFERENCES "public"."standard_types"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "learning_outcomes" ADD CONSTRAINT "learning_outcomes_concept_id_concepts_id_fk" FOREIGN KEY ("concept_id") REFERENCES "public"."concepts"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "concept_common_core_state_standards" ADD CONSTRAINT "concept_common_core_state_standards_concept_id_concepts_id_fk" FOREIGN KEY ("concept_id") REFERENCES "public"."concepts"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "concept_common_core_state_standards" ADD CONSTRAINT "concept_common_core_state_standards_common_core_standard_id_common_core_state_standards_id_fk" FOREIGN KEY ("common_core_standard_id") REFERENCES "public"."common_core_state_standards"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "essential_questions" ADD CONSTRAINT "essential_questions_learning_outcome_id_learning_outcomes_id_fk" FOREIGN KEY ("learning_outcome_id") REFERENCES "public"."learning_outcomes"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "skills" ADD CONSTRAINT "skills_essential_question_id_essential_questions_id_fk" FOREIGN KEY ("essential_question_id") REFERENCES "public"."essential_questions"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "skills_rels" ADD CONSTRAINT "skills_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."skills"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "skills_rels" ADD CONSTRAINT "skills_rels_skills_fk" FOREIGN KEY ("skills_id") REFERENCES "public"."skills"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "universal_questions_suggested_followups" ADD CONSTRAINT "universal_questions_suggested_followups_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."universal_questions"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "universal_questions" ADD CONSTRAINT "universal_questions_skill_id_skills_id_fk" FOREIGN KEY ("skill_id") REFERENCES "public"."skills"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "strategies_materials_needed" ADD CONSTRAINT "strategies_materials_needed_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."strategies"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "strategies" ADD CONSTRAINT "strategies_skill_id_skills_id_fk" FOREIGN KEY ("skill_id") REFERENCES "public"."skills"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "kid_translations_vocabulary_support" ADD CONSTRAINT "kid_translations_vocabulary_support_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."kid_translations"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "kid_translations_examples" ADD CONSTRAINT "kid_translations_examples_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."kid_translations"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "kid_translations" ADD CONSTRAINT "kid_translations_strategy_id_strategies_id_fk" FOREIGN KEY ("strategy_id") REFERENCES "public"."strategies"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "redirects_rels" ADD CONSTRAINT "redirects_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."redirects"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "redirects_rels" ADD CONSTRAINT "redirects_rels_pages_fk" FOREIGN KEY ("pages_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "redirects_rels" ADD CONSTRAINT "redirects_rels_posts_fk" FOREIGN KEY ("posts_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;
@@ -1090,18 +853,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_categories_fk" FOREIGN KEY ("categories_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_subjects_fk" FOREIGN KEY ("subjects_id") REFERENCES "public"."subjects"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_standard_types_fk" FOREIGN KEY ("standard_types_id") REFERENCES "public"."standard_types"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_grades_fk" FOREIGN KEY ("grades_id") REFERENCES "public"."grades"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_concepts_fk" FOREIGN KEY ("concepts_id") REFERENCES "public"."concepts"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_common_core_state_standards_fk" FOREIGN KEY ("common_core_state_standards_id") REFERENCES "public"."common_core_state_standards"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_learning_outcomes_fk" FOREIGN KEY ("learning_outcomes_id") REFERENCES "public"."learning_outcomes"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_concept_common_core_state_standards_fk" FOREIGN KEY ("concept_common_core_state_standards_id") REFERENCES "public"."concept_common_core_state_standards"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_essential_questions_fk" FOREIGN KEY ("essential_questions_id") REFERENCES "public"."essential_questions"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_skills_fk" FOREIGN KEY ("skills_id") REFERENCES "public"."skills"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_universal_questions_fk" FOREIGN KEY ("universal_questions_id") REFERENCES "public"."universal_questions"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_strategies_fk" FOREIGN KEY ("strategies_id") REFERENCES "public"."strategies"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_kid_translations_fk" FOREIGN KEY ("kid_translations_id") REFERENCES "public"."kid_translations"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_redirects_fk" FOREIGN KEY ("redirects_id") REFERENCES "public"."redirects"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_forms_fk" FOREIGN KEY ("forms_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_form_submissions_fk" FOREIGN KEY ("form_submissions_id") REFERENCES "public"."form_submissions"("id") ON DELETE cascade ON UPDATE no action;
@@ -1247,85 +998,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "users_updated_at_idx" ON "users" USING btree ("updated_at");
   CREATE INDEX "users_created_at_idx" ON "users" USING btree ("created_at");
   CREATE UNIQUE INDEX "users_email_idx" ON "users" USING btree ("email");
-  CREATE UNIQUE INDEX "subjects_name_idx" ON "subjects" USING btree ("name");
-  CREATE UNIQUE INDEX "subjects_tag_idx" ON "subjects" USING btree ("tag");
-  CREATE INDEX "subjects_updated_at_idx" ON "subjects" USING btree ("updated_at");
-  CREATE INDEX "subjects_created_at_idx" ON "subjects" USING btree ("created_at");
-  CREATE INDEX "standard_types_subject_idx" ON "standard_types" USING btree ("subject_id");
-  CREATE INDEX "standard_types_updated_at_idx" ON "standard_types" USING btree ("updated_at");
-  CREATE INDEX "standard_types_created_at_idx" ON "standard_types" USING btree ("created_at");
-  CREATE UNIQUE INDEX "subject_abbreviation_idx" ON "standard_types" USING btree ("subject_id","abbreviation");
-  CREATE UNIQUE INDEX "grades_level_idx" ON "grades" USING btree ("level");
-  CREATE INDEX "grades_updated_at_idx" ON "grades" USING btree ("updated_at");
-  CREATE INDEX "grades_created_at_idx" ON "grades" USING btree ("created_at");
-  CREATE INDEX "concepts_slug_idx" ON "concepts" USING btree ("slug");
-  CREATE INDEX "concepts_updated_at_idx" ON "concepts" USING btree ("updated_at");
-  CREATE INDEX "concepts_created_at_idx" ON "concepts" USING btree ("created_at");
-  CREATE INDEX "concepts_rels_order_idx" ON "concepts_rels" USING btree ("order");
-  CREATE INDEX "concepts_rels_parent_idx" ON "concepts_rels" USING btree ("parent_id");
-  CREATE INDEX "concepts_rels_path_idx" ON "concepts_rels" USING btree ("path");
-  CREATE INDEX "concepts_rels_subjects_id_idx" ON "concepts_rels" USING btree ("subjects_id");
-  CREATE UNIQUE INDEX "common_core_state_standards_code_idx" ON "common_core_state_standards" USING btree ("code");
-  CREATE INDEX "common_core_state_standards_subject_idx" ON "common_core_state_standards" USING btree ("subject_id");
-  CREATE INDEX "common_core_state_standards_grade_idx" ON "common_core_state_standards" USING btree ("grade_id");
-  CREATE INDEX "common_core_state_standards_standard_type_idx" ON "common_core_state_standards" USING btree ("standard_type_id");
-  CREATE INDEX "common_core_state_standards_updated_at_idx" ON "common_core_state_standards" USING btree ("updated_at");
-  CREATE INDEX "common_core_state_standards_created_at_idx" ON "common_core_state_standards" USING btree ("created_at");
-  CREATE INDEX "subject_grade_standard_type_idx" ON "common_core_state_standards" USING btree ("subject_id","grade_id","standard_type_id");
-  CREATE UNIQUE INDEX "code_idx" ON "common_core_state_standards" USING btree ("code");
-  CREATE INDEX "learning_outcomes_concept_idx" ON "learning_outcomes" USING btree ("concept_id");
-  CREATE INDEX "learning_outcomes_updated_at_idx" ON "learning_outcomes" USING btree ("updated_at");
-  CREATE INDEX "learning_outcomes_created_at_idx" ON "learning_outcomes" USING btree ("created_at");
-  CREATE INDEX "concept_sort_idx" ON "learning_outcomes" USING btree ("concept_id","sort");
-  CREATE INDEX "assessment_type_idx" ON "learning_outcomes" USING btree ("assessment_type");
-  CREATE INDEX "concept_common_core_state_standards_concept_idx" ON "concept_common_core_state_standards" USING btree ("concept_id");
-  CREATE INDEX "concept_common_core_state_standards_common_core_standard_idx" ON "concept_common_core_state_standards" USING btree ("common_core_standard_id");
-  CREATE INDEX "concept_common_core_state_standards_updated_at_idx" ON "concept_common_core_state_standards" USING btree ("updated_at");
-  CREATE INDEX "concept_common_core_state_standards_created_at_idx" ON "concept_common_core_state_standards" USING btree ("created_at");
-  CREATE UNIQUE INDEX "concept_common_core_standard_idx" ON "concept_common_core_state_standards" USING btree ("concept_id","common_core_standard_id");
-  CREATE INDEX "concept_idx" ON "concept_common_core_state_standards" USING btree ("concept_id");
-  CREATE INDEX "common_core_standard_idx" ON "concept_common_core_state_standards" USING btree ("common_core_standard_id");
-  CREATE UNIQUE INDEX "essential_questions_learning_outcome_idx" ON "essential_questions" USING btree ("learning_outcome_id");
-  CREATE INDEX "essential_questions_updated_at_idx" ON "essential_questions" USING btree ("updated_at");
-  CREATE INDEX "essential_questions_created_at_idx" ON "essential_questions" USING btree ("created_at");
-  CREATE UNIQUE INDEX "learning_outcome_idx" ON "essential_questions" USING btree ("learning_outcome_id");
-  CREATE INDEX "sort_idx" ON "essential_questions" USING btree ("sort");
-  CREATE UNIQUE INDEX "skills_essential_question_idx" ON "skills" USING btree ("essential_question_id");
-  CREATE INDEX "skills_updated_at_idx" ON "skills" USING btree ("updated_at");
-  CREATE INDEX "skills_created_at_idx" ON "skills" USING btree ("created_at");
-  CREATE UNIQUE INDEX "essential_question_idx" ON "skills" USING btree ("essential_question_id");
-  CREATE INDEX "sort_1_idx" ON "skills" USING btree ("sort");
-  CREATE INDEX "difficulty_level_idx" ON "skills" USING btree ("difficulty_level");
-  CREATE INDEX "skills_rels_order_idx" ON "skills_rels" USING btree ("order");
-  CREATE INDEX "skills_rels_parent_idx" ON "skills_rels" USING btree ("parent_id");
-  CREATE INDEX "skills_rels_path_idx" ON "skills_rels" USING btree ("path");
-  CREATE INDEX "skills_rels_skills_id_idx" ON "skills_rels" USING btree ("skills_id");
-  CREATE INDEX "universal_questions_suggested_followups_order_idx" ON "universal_questions_suggested_followups" USING btree ("_order");
-  CREATE INDEX "universal_questions_suggested_followups_parent_id_idx" ON "universal_questions_suggested_followups" USING btree ("_parent_id");
-  CREATE INDEX "universal_questions_skill_idx" ON "universal_questions" USING btree ("skill_id");
-  CREATE INDEX "universal_questions_updated_at_idx" ON "universal_questions" USING btree ("updated_at");
-  CREATE INDEX "universal_questions_created_at_idx" ON "universal_questions" USING btree ("created_at");
-  CREATE INDEX "skill_sort_idx" ON "universal_questions" USING btree ("skill_id","sort");
-  CREATE INDEX "question_type_idx" ON "universal_questions" USING btree ("question_type");
-  CREATE INDEX "strategies_materials_needed_order_idx" ON "strategies_materials_needed" USING btree ("_order");
-  CREATE INDEX "strategies_materials_needed_parent_id_idx" ON "strategies_materials_needed" USING btree ("_parent_id");
-  CREATE INDEX "strategies_skill_idx" ON "strategies" USING btree ("skill_id");
-  CREATE INDEX "strategies_updated_at_idx" ON "strategies" USING btree ("updated_at");
-  CREATE INDEX "strategies_created_at_idx" ON "strategies" USING btree ("created_at");
-  CREATE INDEX "skill_sort_1_idx" ON "strategies" USING btree ("skill_id","sort");
-  CREATE INDEX "strategy_type_idx" ON "strategies" USING btree ("strategy_type");
-  CREATE INDEX "difficulty_level_1_idx" ON "strategies" USING btree ("difficulty_level");
-  CREATE INDEX "estimated_minutes_idx" ON "strategies" USING btree ("estimated_minutes");
-  CREATE INDEX "kid_translations_vocabulary_support_order_idx" ON "kid_translations_vocabulary_support" USING btree ("_order");
-  CREATE INDEX "kid_translations_vocabulary_support_parent_id_idx" ON "kid_translations_vocabulary_support" USING btree ("_parent_id");
-  CREATE INDEX "kid_translations_examples_order_idx" ON "kid_translations_examples" USING btree ("_order");
-  CREATE INDEX "kid_translations_examples_parent_id_idx" ON "kid_translations_examples" USING btree ("_parent_id");
-  CREATE UNIQUE INDEX "kid_translations_strategy_idx" ON "kid_translations" USING btree ("strategy_id");
-  CREATE INDEX "kid_translations_updated_at_idx" ON "kid_translations" USING btree ("updated_at");
-  CREATE INDEX "kid_translations_created_at_idx" ON "kid_translations" USING btree ("created_at");
-  CREATE UNIQUE INDEX "strategy_idx" ON "kid_translations" USING btree ("strategy_id");
-  CREATE INDEX "grade_level_idx" ON "kid_translations" USING btree ("grade_level");
-  CREATE INDEX "reading_level_idx" ON "kid_translations" USING btree ("reading_level");
   CREATE UNIQUE INDEX "redirects_from_idx" ON "redirects" USING btree ("from");
   CREATE INDEX "redirects_updated_at_idx" ON "redirects" USING btree ("updated_at");
   CREATE INDEX "redirects_created_at_idx" ON "redirects" USING btree ("created_at");
@@ -1404,18 +1076,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_media_id_idx" ON "payload_locked_documents_rels" USING btree ("media_id");
   CREATE INDEX "payload_locked_documents_rels_categories_id_idx" ON "payload_locked_documents_rels" USING btree ("categories_id");
   CREATE INDEX "payload_locked_documents_rels_users_id_idx" ON "payload_locked_documents_rels" USING btree ("users_id");
-  CREATE INDEX "payload_locked_documents_rels_subjects_id_idx" ON "payload_locked_documents_rels" USING btree ("subjects_id");
-  CREATE INDEX "payload_locked_documents_rels_standard_types_id_idx" ON "payload_locked_documents_rels" USING btree ("standard_types_id");
-  CREATE INDEX "payload_locked_documents_rels_grades_id_idx" ON "payload_locked_documents_rels" USING btree ("grades_id");
-  CREATE INDEX "payload_locked_documents_rels_concepts_id_idx" ON "payload_locked_documents_rels" USING btree ("concepts_id");
-  CREATE INDEX "payload_locked_documents_rels_common_core_state_standards_id_idx" ON "payload_locked_documents_rels" USING btree ("common_core_state_standards_id");
-  CREATE INDEX "payload_locked_documents_rels_learning_outcomes_id_idx" ON "payload_locked_documents_rels" USING btree ("learning_outcomes_id");
-  CREATE INDEX "payload_locked_documents_rels_concept_common_core_state_standards_id_idx" ON "payload_locked_documents_rels" USING btree ("concept_common_core_state_standards_id");
-  CREATE INDEX "payload_locked_documents_rels_essential_questions_id_idx" ON "payload_locked_documents_rels" USING btree ("essential_questions_id");
-  CREATE INDEX "payload_locked_documents_rels_skills_id_idx" ON "payload_locked_documents_rels" USING btree ("skills_id");
-  CREATE INDEX "payload_locked_documents_rels_universal_questions_id_idx" ON "payload_locked_documents_rels" USING btree ("universal_questions_id");
-  CREATE INDEX "payload_locked_documents_rels_strategies_id_idx" ON "payload_locked_documents_rels" USING btree ("strategies_id");
-  CREATE INDEX "payload_locked_documents_rels_kid_translations_id_idx" ON "payload_locked_documents_rels" USING btree ("kid_translations_id");
   CREATE INDEX "payload_locked_documents_rels_redirects_id_idx" ON "payload_locked_documents_rels" USING btree ("redirects_id");
   CREATE INDEX "payload_locked_documents_rels_forms_id_idx" ON "payload_locked_documents_rels" USING btree ("forms_id");
   CREATE INDEX "payload_locked_documents_rels_form_submissions_id_idx" ON "payload_locked_documents_rels" USING btree ("form_submissions_id");
@@ -1479,24 +1139,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "categories" CASCADE;
   DROP TABLE "users_sessions" CASCADE;
   DROP TABLE "users" CASCADE;
-  DROP TABLE "subjects" CASCADE;
-  DROP TABLE "standard_types" CASCADE;
-  DROP TABLE "grades" CASCADE;
-  DROP TABLE "concepts" CASCADE;
-  DROP TABLE "concepts_rels" CASCADE;
-  DROP TABLE "common_core_state_standards" CASCADE;
-  DROP TABLE "learning_outcomes" CASCADE;
-  DROP TABLE "concept_common_core_state_standards" CASCADE;
-  DROP TABLE "essential_questions" CASCADE;
-  DROP TABLE "skills" CASCADE;
-  DROP TABLE "skills_rels" CASCADE;
-  DROP TABLE "universal_questions_suggested_followups" CASCADE;
-  DROP TABLE "universal_questions" CASCADE;
-  DROP TABLE "strategies_materials_needed" CASCADE;
-  DROP TABLE "strategies" CASCADE;
-  DROP TABLE "kid_translations_vocabulary_support" CASCADE;
-  DROP TABLE "kid_translations_examples" CASCADE;
-  DROP TABLE "kid_translations" CASCADE;
   DROP TABLE "redirects" CASCADE;
   DROP TABLE "redirects_rels" CASCADE;
   DROP TABLE "forms_blocks_checkbox" CASCADE;
@@ -1553,15 +1195,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__pages_v_version_status";
   DROP TYPE "public"."enum_posts_status";
   DROP TYPE "public"."enum__posts_v_version_status";
-  DROP TYPE "public"."enum_learning_outcomes_assessment_type";
-  DROP TYPE "public"."enum_learning_outcomes_difficulty_level";
-  DROP TYPE "public"."enum_concept_common_core_state_standards_alignment_strength";
-  DROP TYPE "public"."enum_skills_difficulty_level";
-  DROP TYPE "public"."enum_universal_questions_question_type";
-  DROP TYPE "public"."enum_strategies_strategy_type";
-  DROP TYPE "public"."enum_strategies_difficulty_level";
-  DROP TYPE "public"."enum_kid_translations_grade_level";
-  DROP TYPE "public"."enum_kid_translations_reading_level";
   DROP TYPE "public"."enum_redirects_to_type";
   DROP TYPE "public"."enum_forms_confirmation_type";
   DROP TYPE "public"."enum_payload_jobs_log_task_slug";

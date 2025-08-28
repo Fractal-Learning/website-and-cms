@@ -1,5 +1,5 @@
 {
-  "id": "3ecc0d2b-eab7-4c73-963b-26e413e46cfa",
+  "id": "732c89bf-102e-42a4-ad0b-1290f470637c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -5059,6 +5059,110 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.grades": {
+      "name": "grades",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "level": {
+          "name": "level",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "grades_level_idx": {
+          "name": "grades_level_idx",
+          "columns": [
+            {
+              "expression": "level",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "grades_updated_at_idx": {
+          "name": "grades_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "grades_created_at_idx": {
+          "name": "grades_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.subjects": {
       "name": "subjects",
       "schema": "",
@@ -5075,11 +5179,17 @@
           "primaryKey": false,
           "notNull": true
         },
-        "tag": {
-          "name": "tag",
+        "abbreviation": {
+          "name": "abbreviation",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "description": {
           "name": "description",
@@ -5137,11 +5247,26 @@
           "method": "btree",
           "with": {}
         },
-        "subjects_tag_idx": {
-          "name": "subjects_tag_idx",
+        "subjects_abbreviation_idx": {
+          "name": "subjects_abbreviation_idx",
           "columns": [
             {
-              "expression": "tag",
+              "expression": "abbreviation",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "subjects_code_idx": {
+          "name": "subjects_code_idx",
+          "columns": [
+            {
+              "expression": "code",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -5335,110 +5460,6 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.grades": {
-      "name": "grades",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "level": {
-          "name": "level",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "sort_order": {
-          "name": "sort_order",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "active": {
-          "name": "active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "grades_level_idx": {
-          "name": "grades_level_idx",
-          "columns": [
-            {
-              "expression": "level",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "grades_updated_at_idx": {
-          "name": "grades_updated_at_idx",
-          "columns": [
-            {
-              "expression": "updated_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "grades_created_at_idx": {
-          "name": "grades_created_at_idx",
-          "columns": [
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -10504,6 +10525,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "grades_id": {
+          "name": "grades_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "subjects_id": {
           "name": "subjects_id",
           "type": "integer",
@@ -10512,12 +10539,6 @@
         },
         "standard_types_id": {
           "name": "standard_types_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "grades_id": {
-          "name": "grades_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -10728,6 +10749,21 @@
           "method": "btree",
           "with": {}
         },
+        "payload_locked_documents_rels_grades_id_idx": {
+          "name": "payload_locked_documents_rels_grades_id_idx",
+          "columns": [
+            {
+              "expression": "grades_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "payload_locked_documents_rels_subjects_id_idx": {
           "name": "payload_locked_documents_rels_subjects_id_idx",
           "columns": [
@@ -10748,21 +10784,6 @@
           "columns": [
             {
               "expression": "standard_types_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "payload_locked_documents_rels_grades_id_idx": {
-          "name": "payload_locked_documents_rels_grades_id_idx",
-          "columns": [
-            {
-              "expression": "grades_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -11063,6 +11084,19 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
+        "payload_locked_documents_rels_grades_fk": {
+          "name": "payload_locked_documents_rels_grades_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "grades",
+          "columnsFrom": [
+            "grades_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "payload_locked_documents_rels_subjects_fk": {
           "name": "payload_locked_documents_rels_subjects_fk",
           "tableFrom": "payload_locked_documents_rels",
@@ -11082,19 +11116,6 @@
           "tableTo": "standard_types",
           "columnsFrom": [
             "standard_types_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "payload_locked_documents_rels_grades_fk": {
-          "name": "payload_locked_documents_rels_grades_fk",
-          "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "grades",
-          "columnsFrom": [
-            "grades_id"
           ],
           "columnsTo": [
             "id"
