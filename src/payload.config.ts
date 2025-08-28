@@ -32,6 +32,7 @@ import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const isProd = process.env.NODE_ENV === 'production'
 
 export default buildConfig({
   admin: {
@@ -82,14 +83,14 @@ export default buildConfig({
           },
     },
     // Disable push mode in production to force migrations
-    push: process.env.NODE_ENV !== 'production',
+    push: !isProd,
   }),
   // Force migrations in production to avoid dev mode warnings
-  ...(process.env.NODE_ENV === 'production' && {
-    migrations: {
-      auto: true,
-    },
-  }),
+  // ...(process.env.NODE_ENV === 'production' && {
+  //   migrations: {
+  //     auto: true,
+  //   },
+  // }),
   collections: [
     Pages,
     Posts,

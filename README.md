@@ -14,18 +14,36 @@ This template is right for you if you are working on:
 
 Core features:
 
-- [Pre-configured Payload Config](#how-it-works)
-- [Authentication](#users-authentication)
-- [Access Control](#access-control)
-- [Layout Builder](#layout-builder)
-- [Draft Preview](#draft-preview)
-- [Live Preview](#live-preview)
-- [On-demand Revalidation](#on-demand-revalidation)
-- [SEO](#seo)
-- [Search](#search)
-- [Redirects](#redirects)
-- [Jobs and Scheduled Publishing](#jobs-and-scheduled-publish)
-- [Website](#website)
+- [Payload Website Template](#payload-website-template)
+  - [Quick start](#quick-start)
+    - [Services](#services)
+      - [Secrets](#secrets)
+  - [Quick Start - local setup](#quick-start---local-setup)
+    - [Clone](#clone)
+    - [Development](#development)
+      - [Docker (Optional)](#docker-optional)
+  - [How it works](#how-it-works)
+    - [Collections](#collections)
+    - [Globals](#globals)
+  - [Access control](#access-control)
+  - [Layout Builder](#layout-builder)
+  - [Lexical editor](#lexical-editor)
+  - [Draft Preview](#draft-preview)
+  - [Live preview](#live-preview)
+  - [On-demand Revalidation](#on-demand-revalidation)
+  - [SEO](#seo)
+  - [Search](#search)
+  - [Redirects](#redirects)
+  - [Jobs and Scheduled Publish](#jobs-and-scheduled-publish)
+  - [Website](#website)
+  - [Development](#development-1)
+    - [Working with Postgres](#working-with-postgres)
+      - [Local development](#local-development)
+      - [Migrations](#migrations)
+        - [Troubleshooting](#troubleshooting)
+    - [Docker](#docker)
+    - [Seed](#seed)
+  - [Questions](#questions)
 
 ## Quick start
 
@@ -245,6 +263,12 @@ pnpm payload migrate
 ```
 
 This command will check for any migrations that have not yet been run and try to run them and it will keep a record of migrations that have been run in the database.
+
+##### Troubleshooting
+
+- If you accidentally run dev migrations in prod, Vercel will fail on deployment so you may need to run the following in NeonDB before deploying:
+- `DELETE FROM payload_migrations WHERE batch = -1;`
+  - Note: You shouldn't be hitting prod db for dev anyway
 
 ### Docker
 
