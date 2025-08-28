@@ -78,7 +78,6 @@ export interface Config {
     concepts: Concept;
     'common-core-state-standards': CommonCoreStateStandard;
     'learning-outcomes': LearningOutcome;
-    'concept-common-core-state-standards': ConceptCommonCoreStateStandard;
     'essential-questions': EssentialQuestion;
     skills: Skill;
     'universal-questions': UniversalQuestion;
@@ -106,7 +105,6 @@ export interface Config {
     concepts: ConceptsSelect<false> | ConceptsSelect<true>;
     'common-core-state-standards': CommonCoreStateStandardsSelect<false> | CommonCoreStateStandardsSelect<true>;
     'learning-outcomes': LearningOutcomesSelect<false> | LearningOutcomesSelect<true>;
-    'concept-common-core-state-standards': ConceptCommonCoreStateStandardsSelect<false> | ConceptCommonCoreStateStandardsSelect<true>;
     'essential-questions': EssentialQuestionsSelect<false> | EssentialQuestionsSelect<true>;
     skills: SkillsSelect<false> | SkillsSelect<true>;
     'universal-questions': UniversalQuestionsSelect<false> | UniversalQuestionsSelect<true>;
@@ -777,10 +775,6 @@ export interface Subject {
    */
   description?: string | null;
   /**
-   * Hex color code for UI display (e.g., "#3B82F6")
-   */
-  display_color?: string | null;
-  /**
    * Numeric order for sorting subjects
    */
   sort_order?: number | null;
@@ -802,9 +796,9 @@ export interface StandardType {
    */
   name: string;
   /**
-   * Standard type abbreviation (e.g., "RL", "NBT", "OA")
+   * Standard type tag (e.g., "RL", "NBT", "OA")
    */
-  abbreviation: string;
+  tag: string;
   /**
    * The subject this standard type belongs to
    */
@@ -813,6 +807,10 @@ export interface StandardType {
    * Detailed description of this standard type
    */
   description?: string | null;
+  /**
+   * Hex color code for UI display (e.g., "#3B82F6")
+   */
+  display_color?: string | null;
   /**
    * Numeric order for sorting within the subject
    */
@@ -881,6 +879,10 @@ export interface Concept {
    * Academic subjects this concept relates to
    */
   subjects?: (number | Subject)[] | null;
+  /**
+   * Common Core State Standards this concept aligns with
+   */
+  common_core_standards?: (number | CommonCoreStateStandard)[] | null;
   /**
    * Whether this concept is currently active
    */
@@ -1029,37 +1031,6 @@ export interface LearningOutcome {
    * Difficulty level of this learning outcome
    */
   difficulty_level?: ('beginner' | 'intermediate' | 'advanced') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Bridge collection linking concepts to Common Core State Standards
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "concept-common-core-state-standards".
- */
-export interface ConceptCommonCoreStateStandard {
-  id: number;
-  /**
-   * The concept being aligned to standards
-   */
-  concept: number | Concept;
-  /**
-   * The Common Core State Standard being aligned
-   */
-  common_core_standard: number | CommonCoreStateStandard;
-  /**
-   * Optional notes about this alignment
-   */
-  notes?: string | null;
-  /**
-   * How strongly this concept aligns with the standard
-   */
-  alignment_strength?: ('strong' | 'moderate' | 'weak') | null;
-  /**
-   * Whether this alignment is currently active
-   */
-  active?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1593,10 +1564,6 @@ export interface PayloadLockedDocument {
         value: number | LearningOutcome;
       } | null)
     | ({
-        relationTo: 'concept-common-core-state-standards';
-        value: number | ConceptCommonCoreStateStandard;
-      } | null)
-    | ({
         relationTo: 'essential-questions';
         value: number | EssentialQuestion;
       } | null)
@@ -1988,7 +1955,6 @@ export interface SubjectsSelect<T extends boolean = true> {
   name?: T;
   tag?: T;
   description?: T;
-  display_color?: T;
   sort_order?: T;
   active?: T;
   updatedAt?: T;
@@ -2000,9 +1966,10 @@ export interface SubjectsSelect<T extends boolean = true> {
  */
 export interface StandardTypesSelect<T extends boolean = true> {
   name?: T;
-  abbreviation?: T;
+  tag?: T;
   subject?: T;
   description?: T;
+  display_color?: T;
   sort_order?: T;
   active?: T;
   updatedAt?: T;
@@ -2028,6 +1995,7 @@ export interface ConceptsSelect<T extends boolean = true> {
   title?: T;
   overview?: T;
   subjects?: T;
+  common_core_standards?: T;
   active?: T;
   metadata?: T;
   slug?: T;
@@ -2065,19 +2033,6 @@ export interface LearningOutcomesSelect<T extends boolean = true> {
   active?: T;
   estimated_duration_minutes?: T;
   difficulty_level?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "concept-common-core-state-standards_select".
- */
-export interface ConceptCommonCoreStateStandardsSelect<T extends boolean = true> {
-  concept?: T;
-  common_core_standard?: T;
-  notes?: T;
-  alignment_strength?: T;
-  active?: T;
   updatedAt?: T;
   createdAt?: T;
 }

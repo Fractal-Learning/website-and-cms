@@ -14,7 +14,7 @@ export const Concepts: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'active', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'subjects', 'common_core_standards', 'active', 'updatedAt'],
   },
   fields: [
     {
@@ -40,6 +40,15 @@ export const Concepts: CollectionConfig = {
       hasMany: true,
       admin: {
         description: 'Academic subjects this concept relates to',
+      },
+    },
+    {
+      name: 'common_core_standards',
+      type: 'relationship',
+      relationTo: 'common-core-state-standards',
+      hasMany: true,
+      admin: {
+        description: 'Common Core State Standards this concept aligns with',
       },
     },
     {

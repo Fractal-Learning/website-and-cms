@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
 import { CommonCoreStateStandards } from './collections/CommonCoreStateStandards'
-import { ConceptCommonCoreStateStandards } from './collections/ConceptCommonCoreStateStandards'
+
 import { Concepts } from './collections/Concepts'
 import { EssentialQuestions } from './collections/EssentialQuestions'
 import { Grades } from './collections/Grades'
@@ -85,12 +85,7 @@ export default buildConfig({
     // Disable push mode in production to force migrations
     push: !isProd,
   }),
-  // Force migrations in production to avoid dev mode warnings
-  // ...(process.env.NODE_ENV === 'production' && {
-  //   migrations: {
-  //     auto: true,
-  //   },
-  // }),
+
   collections: [
     Pages,
     Posts,
@@ -103,7 +98,6 @@ export default buildConfig({
     Concepts,
     CommonCoreStateStandards,
     LearningOutcomes,
-    ConceptCommonCoreStateStandards,
     EssentialQuestions,
     Skills,
     UniversalQuestions,

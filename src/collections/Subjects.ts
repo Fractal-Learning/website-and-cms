@@ -41,13 +41,7 @@ export const Subjects: CollectionConfig = {
         description: 'Detailed description of the subject area',
       },
     },
-    {
-      name: 'display_color',
-      type: 'text',
-      admin: {
-        description: 'Hex color code for UI display (e.g., "#3B82F6")',
-      },
-    },
+
     {
       name: 'sort_order',
       type: 'number',

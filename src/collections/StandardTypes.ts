@@ -13,7 +13,7 @@ export const StandardTypes: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'subject', 'abbreviation', 'active', 'updatedAt'],
+    defaultColumns: ['name', 'subject', 'tag', 'display_color', 'active', 'updatedAt'],
   },
   fields: [
     {
@@ -25,11 +25,11 @@ export const StandardTypes: CollectionConfig = {
       },
     },
     {
-      name: 'abbreviation',
+      name: 'tag',
       type: 'text',
       required: true,
       admin: {
-        description: 'Standard type abbreviation (e.g., "RL", "NBT", "OA")',
+        description: 'Standard type tag (e.g., "RL", "NBT", "OA")',
       },
     },
     {
@@ -49,6 +49,13 @@ export const StandardTypes: CollectionConfig = {
       },
     },
     {
+      name: 'display_color',
+      type: 'text',
+      admin: {
+        description: 'Hex color code for UI display (e.g., "#3B82F6")',
+      },
+    },
+    {
       name: 'sort_order',
       type: 'number',
       admin: {
@@ -64,10 +71,10 @@ export const StandardTypes: CollectionConfig = {
       },
     },
   ],
-  // Add index for unique constraint on subject + abbreviation combination
+  // Add index for unique constraint on subject + tag combination
   indexes: [
     {
-      fields: ['subject', 'abbreviation'],
+      fields: ['subject', 'tag'],
       unique: true,
     },
   ],
