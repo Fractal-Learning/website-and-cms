@@ -13,7 +13,8 @@ export const CommonCoreCodes: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'code_name',
-    defaultColumns: ['code_name', 'created_at', 'updated_at'],
+    defaultColumns: ['code_name', 'active', 'created_at', 'updated_at'],
+    listSearchableFields: ['code_name'],
   },
   fields: [
     {

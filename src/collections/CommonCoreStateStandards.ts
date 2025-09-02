@@ -12,18 +12,39 @@ export const CommonCoreStateStandards: CollectionConfig = {
     update: authenticated,
   },
   admin: {
-    useAsTitle: 'code',
+    useAsTitle: 'title',
     defaultColumns: ['code', 'subject', 'grade', 'standard_type', 'active', 'updatedAt'],
+    listSearchableFields: ['code'],
+  },
+  // This config controls what's populated by default when a standard is referenced
+  defaultPopulate: {
+    code: {
+      code_name: true,
+    },
+    subject: true,
+    grade: true,
+    standard_type: true,
   },
   fields: [
+    {
+      name: 'title',
+      type: 'text',
+      admin: {
+        hidden: true,
+        readOnly: true,
+      },
+    },
     {
       name: 'code',
       type: 'relationship',
       relationTo: 'common-core-codes',
       required: true,
       unique: true,
+      label: 'Common Core Code',
       admin: {
-        description: 'Common Core code reference (e.g., "RL.6.3", "6.NS.A.1")',
+        description:
+          'Common Core code reference (e.g., "RL.6.3", "6.NS.A.1") - Each code can only be used once',
+        isSortable: true,
       },
     },
     {
@@ -98,4 +119,42 @@ export const CommonCoreStateStandards: CollectionConfig = {
       unique: true,
     },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ data, req }) => {
+        if (data && data.code) {
+          try {
+            const codeId = typeof data.code === 'object' ? data.code.id : data.code
+            const codeDoc = await req.payload.findByID({
+              collection: 'common-core-codes',
+              id: codeId,
+            })
+            data.title = codeDoc.code_name || 'Untitled Standard'
+          } catch (error) {
+            data.title = 'Untitled Standard'
+          }
+        } else {
+          data.title = 'Untitled Standard'
+        }
+        return data
+      },
+    ],
+    afterRead: [
+      async ({ doc, req }) => {
+        if (doc && doc.code && !doc.title) {
+          try {
+            const codeId = typeof doc.code === 'object' ? doc.code.id : doc.code
+            const codeDoc = await req.payload.findByID({
+              collection: 'common-core-codes',
+              id: codeId,
+            })
+            doc.title = codeDoc.code_name || 'Untitled Standard'
+          } catch (error) {
+            doc.title = 'Untitled Standard'
+          }
+        }
+        return doc
+      },
+    ],
+  },
 }

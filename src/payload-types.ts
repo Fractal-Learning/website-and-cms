@@ -78,11 +78,11 @@ export interface Config {
     'common-core-codes': CommonCoreCode;
     'common-core-state-standards': CommonCoreStateStandard;
     concepts: Concept;
+    'concept-universal-questions': ConceptUniversalQuestion;
     'learning-outcomes': LearningOutcome;
     'essential-questions': EssentialQuestion;
     skills: Skill;
     'skill-universal-questions': SkillUniversalQuestion;
-    'concept-universal-questions': ConceptUniversalQuestion;
     strategies: Strategy;
     'kid-translations': KidTranslation;
     redirects: Redirect;
@@ -107,11 +107,11 @@ export interface Config {
     'common-core-codes': CommonCoreCodesSelect<false> | CommonCoreCodesSelect<true>;
     'common-core-state-standards': CommonCoreStateStandardsSelect<false> | CommonCoreStateStandardsSelect<true>;
     concepts: ConceptsSelect<false> | ConceptsSelect<true>;
+    'concept-universal-questions': ConceptUniversalQuestionsSelect<false> | ConceptUniversalQuestionsSelect<true>;
     'learning-outcomes': LearningOutcomesSelect<false> | LearningOutcomesSelect<true>;
     'essential-questions': EssentialQuestionsSelect<false> | EssentialQuestionsSelect<true>;
     skills: SkillsSelect<false> | SkillsSelect<true>;
     'skill-universal-questions': SkillUniversalQuestionsSelect<false> | SkillUniversalQuestionsSelect<true>;
-    'concept-universal-questions': ConceptUniversalQuestionsSelect<false> | ConceptUniversalQuestionsSelect<true>;
     strategies: StrategiesSelect<false> | StrategiesSelect<true>;
     'kid-translations': KidTranslationsSelect<false> | KidTranslationsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -874,8 +874,9 @@ export interface CommonCoreCode {
  */
 export interface CommonCoreStateStandard {
   id: number;
+  title?: string | null;
   /**
-   * Common Core code reference (e.g., "RL.6.3", "6.NS.A.1")
+   * Common Core code reference (e.g., "RL.6.3", "6.NS.A.1") - Each code can only be used once
    */
   code: number | CommonCoreCode;
   /**
@@ -985,6 +986,50 @@ export interface Concept {
     | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Universal questions that prompt concept development
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concept-universal-questions".
+ */
+export interface ConceptUniversalQuestion {
+  id: number;
+  /**
+   * The universal question that prompts this concept
+   */
+  question: string;
+  /**
+   * The concept this question prompts
+   */
+  concept: number | Concept;
+  /**
+   * Sort order within the concept (lower numbers appear first)
+   */
+  sort?: number | null;
+  /**
+   * Whether this universal question is currently active
+   */
+  active?: boolean | null;
+  /**
+   * Type of universal question
+   */
+  question_type?: ('open_ended' | 'reflective' | 'analytical' | 'evaluative' | 'creative') | null;
+  /**
+   * Additional context or guidance for using this question
+   */
+  context?: string | null;
+  /**
+   * Suggested follow-up questions to deepen thinking
+   */
+  suggested_followups?:
+    | {
+        followup_question: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1117,50 +1162,6 @@ export interface SkillUniversalQuestion {
   skill: number | Skill;
   /**
    * Sort order within the skill (lower numbers appear first)
-   */
-  sort?: number | null;
-  /**
-   * Whether this universal question is currently active
-   */
-  active?: boolean | null;
-  /**
-   * Type of universal question
-   */
-  question_type?: ('open_ended' | 'reflective' | 'analytical' | 'evaluative' | 'creative') | null;
-  /**
-   * Additional context or guidance for using this question
-   */
-  context?: string | null;
-  /**
-   * Suggested follow-up questions to deepen thinking
-   */
-  suggested_followups?:
-    | {
-        followup_question: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Universal questions that prompt concept development
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "concept-universal-questions".
- */
-export interface ConceptUniversalQuestion {
-  id: number;
-  /**
-   * The universal question that prompts this concept
-   */
-  question: string;
-  /**
-   * The concept this question prompts
-   */
-  concept: number | Concept;
-  /**
-   * Sort order within the concept (lower numbers appear first)
    */
   sort?: number | null;
   /**
@@ -1585,6 +1586,10 @@ export interface PayloadLockedDocument {
         value: number | Concept;
       } | null)
     | ({
+        relationTo: 'concept-universal-questions';
+        value: number | ConceptUniversalQuestion;
+      } | null)
+    | ({
         relationTo: 'learning-outcomes';
         value: number | LearningOutcome;
       } | null)
@@ -1599,10 +1604,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'skill-universal-questions';
         value: number | SkillUniversalQuestion;
-      } | null)
-    | ({
-        relationTo: 'concept-universal-questions';
-        value: number | ConceptUniversalQuestion;
       } | null)
     | ({
         relationTo: 'strategies';
@@ -2031,6 +2032,7 @@ export interface CommonCoreCodesSelect<T extends boolean = true> {
  * via the `definition` "common-core-state-standards_select".
  */
 export interface CommonCoreStateStandardsSelect<T extends boolean = true> {
+  title?: T;
   code?: T;
   statement?: T;
   subject?: T;
@@ -2055,6 +2057,26 @@ export interface ConceptsSelect<T extends boolean = true> {
   metadata?: T;
   slug?: T;
   slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concept-universal-questions_select".
+ */
+export interface ConceptUniversalQuestionsSelect<T extends boolean = true> {
+  question?: T;
+  concept?: T;
+  sort?: T;
+  active?: T;
+  question_type?: T;
+  context?: T;
+  suggested_followups?:
+    | T
+    | {
+        followup_question?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2102,26 +2124,6 @@ export interface SkillsSelect<T extends boolean = true> {
 export interface SkillUniversalQuestionsSelect<T extends boolean = true> {
   question?: T;
   skill?: T;
-  sort?: T;
-  active?: T;
-  question_type?: T;
-  context?: T;
-  suggested_followups?:
-    | T
-    | {
-        followup_question?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "concept-universal-questions_select".
- */
-export interface ConceptUniversalQuestionsSelect<T extends boolean = true> {
-  question?: T;
-  concept?: T;
   sort?: T;
   active?: T;
   question_type?: T;
