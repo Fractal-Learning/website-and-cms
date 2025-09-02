@@ -46,3 +46,4 @@ echo "Next steps:"
 echo "1. Restart your application server"
 echo "2. Verify the admin panel is accessible"
 echo "3. Test creating/editing content"
+

@@ -1285,10 +1285,6 @@ export interface Strategy {
     [k: string]: unknown;
   };
   /**
-   * Estimated time to complete this strategy (in minutes)
-   */
-  estimated_minutes: number;
-  /**
    * Sort order within the skill (lower numbers appear first)
    */
   sort?: number | null;
@@ -1296,45 +1292,6 @@ export interface Strategy {
    * Whether this strategy is currently active
    */
   active?: boolean | null;
-  /**
-   * Type of strategy based on grouping
-   */
-  strategy_type?: ('individual' | 'pair' | 'small_group' | 'whole_class' | 'independent') | null;
-  /**
-   * Difficulty level of this strategy
-   */
-  difficulty_level?: ('beginner' | 'intermediate' | 'advanced') | null;
-  /**
-   * Materials or resources needed for this strategy
-   */
-  materials_needed?:
-    | {
-        material: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Step-by-step instructions for implementing the strategy
-   */
-  instructions?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * How to assess student progress with this strategy
-   */
-  assessment_method?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2238,19 +2195,8 @@ export interface StrategiesSelect<T extends boolean = true> {
   name?: T;
   skill?: T;
   description?: T;
-  estimated_minutes?: T;
   sort?: T;
   active?: T;
-  strategy_type?: T;
-  difficulty_level?: T;
-  materials_needed?:
-    | T
-    | {
-        material?: T;
-        id?: T;
-      };
-  instructions?: T;
-  assessment_method?: T;
   updatedAt?: T;
   createdAt?: T;
 }
