@@ -13,31 +13,17 @@ export const StateStandards: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'statement',
-    defaultColumns: [
-      'state_code',
-      'state_name',
-      'common_core_state_standard',
-      'active',
-      'updatedAt',
-    ],
+    defaultColumns: ['state', 'common_core_state_standard', 'active', 'updatedAt'],
     description: 'State-specific standards that align with Common Core State Standards',
   },
   fields: [
     {
-      name: 'state_code',
-      type: 'text',
-      required: true,
-      maxLength: 2,
-      admin: {
-        description: 'Two-letter state code (e.g., "CA", "TX", "NY")',
-      },
-    },
-    {
-      name: 'state_name',
-      type: 'text',
+      name: 'state',
+      type: 'relationship',
+      relationTo: 'states',
       required: true,
       admin: {
-        description: 'Full state name (e.g., "California", "Texas", "New York")',
+        description: 'The state this standard applies to',
       },
     },
 
@@ -80,15 +66,15 @@ export const StateStandards: CollectionConfig = {
   // Add indexes for efficient querying
   indexes: [
     {
-      fields: ['state_code', 'common_core_state_standard'],
+      fields: ['state', 'common_core_state_standard'],
     },
     {
       fields: ['common_core_state_standard'],
     },
     {
-      fields: ['state_code'],
+      fields: ['state'],
     },
   ],
-  // Default sort by state and grade
-  defaultSort: 'state_code',
+  // Default sort by state
+  defaultSort: 'state',
 }

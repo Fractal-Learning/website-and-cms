@@ -49,6 +49,14 @@ erDiagram
         timestamp updated_at
     }
 
+    states {
+        integer id PK
+        varchar state_abbreviation UK
+        text state_name UK
+        timestamp created_at
+        timestamp updated_at
+    }
+
     %% Common Core Standards Tables
     common_core_codes {
         integer id PK
@@ -74,8 +82,7 @@ erDiagram
 
     state_standards {
         integer id PK
-        varchar state_code
-        text state_name
+        integer state_id FK
         integer common_core_state_standard_id FK
         text statement
         jsonb metadata
@@ -183,6 +190,7 @@ erDiagram
 
     common_core_codes ||--o{ common_core_state_standards : "referenced by"
 
+    states ||--o{ state_standards : "has many"
     common_core_state_standards ||--o{ state_standards : "has many"
 
     learning_outcomes ||--o{ essential_questions : "has many"

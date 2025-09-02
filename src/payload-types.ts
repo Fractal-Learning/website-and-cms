@@ -74,6 +74,7 @@ export interface Config {
     users: User;
     subjects: Subject;
     'standard-types': StandardType;
+    states: State;
     grades: Grade;
     'common-core-codes': CommonCoreCode;
     'common-core-state-standards': CommonCoreStateStandard;
@@ -104,6 +105,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     subjects: SubjectsSelect<false> | SubjectsSelect<true>;
     'standard-types': StandardTypesSelect<false> | StandardTypesSelect<true>;
+    states: StatesSelect<false> | StatesSelect<true>;
     grades: GradesSelect<false> | GradesSelect<true>;
     'common-core-codes': CommonCoreCodesSelect<false> | CommonCoreCodesSelect<true>;
     'common-core-state-standards': CommonCoreStateStandardsSelect<false> | CommonCoreStateStandardsSelect<true>;
@@ -829,6 +831,25 @@ export interface StandardType {
   createdAt: string;
 }
 /**
+ * US States with abbreviations and full names
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "states".
+ */
+export interface State {
+  id: number;
+  /**
+   * Two-letter state abbreviation (e.g., "CA", "TX", "NY")
+   */
+  state_abbreviation: string;
+  /**
+   * Full state name (e.g., "California", "Texas", "New York")
+   */
+  state_name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "grades".
  */
@@ -943,21 +964,9 @@ export interface CommonCoreStateStandard {
 export interface StateStandard {
   id: number;
   /**
-   * Two-letter state code (e.g., "CA", "TX", "NY")
+   * The state this standard applies to
    */
-  state_code: string;
-  /**
-   * Full state name (e.g., "California", "Texas", "New York")
-   */
-  state_name: string;
-  /**
-   * Academic subject this state standard belongs to
-   */
-  subject: number | Subject;
-  /**
-   * Grade level for this state standard
-   */
-  grade: number | Grade;
+  state: number | State;
   /**
    * The Common Core State Standard this state standard aligns with
    */
@@ -1623,6 +1632,10 @@ export interface PayloadLockedDocument {
         value: number | StandardType;
       } | null)
     | ({
+        relationTo: 'states';
+        value: number | State;
+      } | null)
+    | ({
         relationTo: 'grades';
         value: number | Grade;
       } | null)
@@ -2064,6 +2077,16 @@ export interface StandardTypesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "states_select".
+ */
+export interface StatesSelect<T extends boolean = true> {
+  state_abbreviation?: T;
+  state_name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "grades_select".
  */
 export interface GradesSelect<T extends boolean = true> {
@@ -2106,10 +2129,7 @@ export interface CommonCoreStateStandardsSelect<T extends boolean = true> {
  * via the `definition` "state-standards_select".
  */
 export interface StateStandardsSelect<T extends boolean = true> {
-  state_code?: T;
-  state_name?: T;
-  subject?: T;
-  grade?: T;
+  state?: T;
   common_core_state_standard?: T;
   statement?: T;
   metadata?: T;

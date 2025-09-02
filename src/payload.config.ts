@@ -21,6 +21,7 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Skills } from './collections/Skills'
 import { StandardTypes } from './collections/StandardTypes'
+import { States } from './collections/States'
 import { Strategies } from './collections/Strategies'
 import { Subjects } from './collections/Subjects'
 import { SkillUniversalQuestions } from './collections/SkillUniversalQuestions'
@@ -97,6 +98,7 @@ export default buildConfig({
     Users,
     Subjects,
     StandardTypes,
+    States,
     Grades,
     CommonCoreCodes,
     CommonCoreStateStandards,
