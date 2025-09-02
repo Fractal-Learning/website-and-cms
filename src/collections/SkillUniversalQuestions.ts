@@ -3,8 +3,8 @@ import type { CollectionConfig } from 'payload'
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
 
-export const UniversalQuestions: CollectionConfig = {
-  slug: 'universal-questions',
+export const SkillUniversalQuestions: CollectionConfig = {
+  slug: 'skill-universal-questions',
   access: {
     create: authenticated,
     delete: authenticated,

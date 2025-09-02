@@ -53,14 +53,6 @@ export const EssentialQuestions: CollectionConfig = {
         position: 'sidebar',
       },
     },
-    {
-      name: 'context',
-      type: 'textarea',
-      admin: {
-        description: 'Additional context or background for this question',
-        position: 'sidebar',
-      },
-    },
   ],
   // Indexes for efficient querying
   indexes: [

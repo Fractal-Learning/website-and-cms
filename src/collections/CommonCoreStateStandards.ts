@@ -18,11 +18,12 @@ export const CommonCoreStateStandards: CollectionConfig = {
   fields: [
     {
       name: 'code',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'common-core-codes',
       required: true,
       unique: true,
       admin: {
-        description: 'Standard code (e.g., "RL.6.3", "6.NS.A.1")',
+        description: 'Common Core code reference (e.g., "RL.6.3", "6.NS.A.1")',
       },
     },
     {
@@ -60,13 +61,7 @@ export const CommonCoreStateStandards: CollectionConfig = {
         description: 'Type of standard (e.g., Reading Literature, Number Operations)',
       },
     },
-    {
-      name: 'domain',
-      type: 'text',
-      admin: {
-        description: 'Domain or cluster within the standard type (optional)',
-      },
-    },
+
     {
       name: 'metadata',
       type: 'json',

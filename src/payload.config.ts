@@ -8,6 +8,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { CommonCoreCodes } from './collections/CommonCoreCodes'
 import { CommonCoreStateStandards } from './collections/CommonCoreStateStandards'
 
 import { Concepts } from './collections/Concepts'
@@ -22,7 +23,8 @@ import { Skills } from './collections/Skills'
 import { StandardTypes } from './collections/StandardTypes'
 import { Strategies } from './collections/Strategies'
 import { Subjects } from './collections/Subjects'
-import { UniversalQuestions } from './collections/UniversalQuestions'
+import { SkillUniversalQuestions } from './collections/SkillUniversalQuestions'
+import { ConceptUniversalQuestions } from './collections/ConceptUniversalQuestions'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -95,12 +97,14 @@ export default buildConfig({
     Subjects,
     StandardTypes,
     Grades,
-    Concepts,
+    CommonCoreCodes,
     CommonCoreStateStandards,
+    Concepts,
     LearningOutcomes,
     EssentialQuestions,
     Skills,
-    UniversalQuestions,
+    SkillUniversalQuestions,
+    ConceptUniversalQuestions,
     Strategies,
     KidTranslations,
   ],

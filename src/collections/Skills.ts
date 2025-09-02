@@ -13,8 +13,8 @@ export const Skills: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'essential_question', 'sort', 'updatedAt'],
-    description: 'Specific skills defined by essential questions',
+    defaultColumns: ['name', 'concept', 'sort', 'updatedAt'],
+    description: 'Specific skills defined by concepts',
   },
   fields: [
     {
@@ -26,13 +26,12 @@ export const Skills: CollectionConfig = {
       },
     },
     {
-      name: 'essential_question',
+      name: 'concept',
       type: 'relationship',
-      relationTo: 'essential-questions',
+      relationTo: 'concepts',
       required: true,
-      unique: true,
       admin: {
-        description: 'The essential question that defines this skill (one-to-one relationship)',
+        description: 'The concept this skill belongs to',
       },
     },
     {
@@ -61,51 +60,11 @@ export const Skills: CollectionConfig = {
         position: 'sidebar',
       },
     },
-    {
-      name: 'prerequisites',
-      type: 'relationship',
-      relationTo: 'skills',
-      hasMany: true,
-      admin: {
-        description: 'Other skills that are prerequisites for this skill',
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'difficulty_level',
-      type: 'select',
-      options: [
-        { label: 'Beginner', value: 'beginner' },
-        { label: 'Intermediate', value: 'intermediate' },
-        { label: 'Advanced', value: 'advanced' },
-        { label: 'Expert', value: 'expert' },
-      ],
-      defaultValue: 'beginner',
-      admin: {
-        description: 'Difficulty level of this skill',
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'estimated_hours',
-      type: 'number',
-      admin: {
-        description: 'Estimated hours to master this skill',
-        position: 'sidebar',
-      },
-    },
   ],
   // Indexes for efficient querying
   indexes: [
     {
-      fields: ['essential_question'],
-      unique: true,
-    },
-    {
-      fields: ['sort'],
-    },
-    {
-      fields: ['difficulty_level'],
+      fields: ['concept', 'sort'],
     },
   ],
   // Default sort by sort order

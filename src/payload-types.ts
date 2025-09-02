@@ -75,12 +75,14 @@ export interface Config {
     subjects: Subject;
     'standard-types': StandardType;
     grades: Grade;
-    concepts: Concept;
+    'common-core-codes': CommonCoreCode;
     'common-core-state-standards': CommonCoreStateStandard;
+    concepts: Concept;
     'learning-outcomes': LearningOutcome;
     'essential-questions': EssentialQuestion;
     skills: Skill;
-    'universal-questions': UniversalQuestion;
+    'skill-universal-questions': SkillUniversalQuestion;
+    'concept-universal-questions': ConceptUniversalQuestion;
     strategies: Strategy;
     'kid-translations': KidTranslation;
     redirects: Redirect;
@@ -102,12 +104,14 @@ export interface Config {
     subjects: SubjectsSelect<false> | SubjectsSelect<true>;
     'standard-types': StandardTypesSelect<false> | StandardTypesSelect<true>;
     grades: GradesSelect<false> | GradesSelect<true>;
-    concepts: ConceptsSelect<false> | ConceptsSelect<true>;
+    'common-core-codes': CommonCoreCodesSelect<false> | CommonCoreCodesSelect<true>;
     'common-core-state-standards': CommonCoreStateStandardsSelect<false> | CommonCoreStateStandardsSelect<true>;
+    concepts: ConceptsSelect<false> | ConceptsSelect<true>;
     'learning-outcomes': LearningOutcomesSelect<false> | LearningOutcomesSelect<true>;
     'essential-questions': EssentialQuestionsSelect<false> | EssentialQuestionsSelect<true>;
     skills: SkillsSelect<false> | SkillsSelect<true>;
-    'universal-questions': UniversalQuestionsSelect<false> | UniversalQuestionsSelect<true>;
+    'skill-universal-questions': SkillUniversalQuestionsSelect<false> | SkillUniversalQuestionsSelect<true>;
+    'concept-universal-questions': ConceptUniversalQuestionsSelect<false> | ConceptUniversalQuestionsSelect<true>;
     strategies: StrategiesSelect<false> | StrategiesSelect<true>;
     'kid-translations': KidTranslationsSelect<false> | KidTranslationsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -849,6 +853,86 @@ export interface Grade {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "common-core-codes".
+ */
+export interface CommonCoreCode {
+  id: number;
+  /**
+   * Common Core code name (e.g., "RL.6.3", "6.NS.A.1")
+   */
+  code_name: string;
+  /**
+   * Whether this code is currently active
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "common-core-state-standards".
+ */
+export interface CommonCoreStateStandard {
+  id: number;
+  /**
+   * Common Core code reference (e.g., "RL.6.3", "6.NS.A.1")
+   */
+  code: number | CommonCoreCode;
+  /**
+   * Full text of the standard statement
+   */
+  statement: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Academic subject this standard belongs to
+   */
+  subject: number | Subject;
+  /**
+   * Grade level for this standard
+   */
+  grade: number | Grade;
+  /**
+   * Type of standard (e.g., Reading Literature, Number Operations)
+   */
+  standard_type: number | StandardType;
+  /**
+   * Additional metadata about this standard
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Whether this standard is currently active
+   */
+  active?: boolean | null;
+  /**
+   * Internal notes about this standard
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "concepts".
  */
 export interface Concept {
@@ -906,73 +990,6 @@ export interface Concept {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "common-core-state-standards".
- */
-export interface CommonCoreStateStandard {
-  id: number;
-  /**
-   * Standard code (e.g., "RL.6.3", "6.NS.A.1")
-   */
-  code: string;
-  /**
-   * Full text of the standard statement
-   */
-  statement: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * Academic subject this standard belongs to
-   */
-  subject: number | Subject;
-  /**
-   * Grade level for this standard
-   */
-  grade: number | Grade;
-  /**
-   * Type of standard (e.g., Reading Literature, Number Operations)
-   */
-  standard_type: number | StandardType;
-  /**
-   * Domain or cluster within the standard type (optional)
-   */
-  domain?: string | null;
-  /**
-   * Additional metadata about this standard
-   */
-  metadata?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  /**
-   * Whether this standard is currently active
-   */
-  active?: boolean | null;
-  /**
-   * Internal notes about this standard
-   */
-  notes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "learning-outcomes".
  */
 export interface LearningOutcome {
@@ -1000,22 +1017,6 @@ export interface LearningOutcome {
    */
   concept: number | Concept;
   /**
-   * Criteria that define successful achievement of this outcome
-   */
-  success_criteria?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  /**
-   * Type of assessment for this learning outcome
-   */
-  assessment_type: 'formative' | 'summative' | 'diagnostic' | 'benchmark';
-  /**
    * Sort order within the concept (lower numbers appear first)
    */
   sort?: number | null;
@@ -1023,14 +1024,6 @@ export interface LearningOutcome {
    * Whether this learning outcome is currently active
    */
   active?: boolean | null;
-  /**
-   * Estimated time to achieve this outcome (in minutes)
-   */
-  estimated_duration_minutes?: number | null;
-  /**
-   * Difficulty level of this learning outcome
-   */
-  difficulty_level?: ('beginner' | 'intermediate' | 'advanced') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1058,15 +1051,11 @@ export interface EssentialQuestion {
    * Whether this essential question is currently active
    */
   active?: boolean | null;
-  /**
-   * Additional context or background for this question
-   */
-  context?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Specific skills defined by essential questions
+ * Specific skills defined by concepts
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "skills".
@@ -1078,9 +1067,9 @@ export interface Skill {
    */
   name: string;
   /**
-   * The essential question that defines this skill (one-to-one relationship)
+   * The concept this skill belongs to
    */
-  essential_question: number | EssentialQuestion;
+  concept: number | Concept;
   /**
    * The big idea behind this skill (supports Markdown)
    */
@@ -1107,18 +1096,6 @@ export interface Skill {
    * Whether this skill is currently active
    */
   active?: boolean | null;
-  /**
-   * Other skills that are prerequisites for this skill
-   */
-  prerequisites?: (number | Skill)[] | null;
-  /**
-   * Difficulty level of this skill
-   */
-  difficulty_level?: ('beginner' | 'intermediate' | 'advanced' | 'expert') | null;
-  /**
-   * Estimated hours to master this skill
-   */
-  estimated_hours?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1126,9 +1103,9 @@ export interface Skill {
  * Universal questions that prompt skill development
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "universal-questions".
+ * via the `definition` "skill-universal-questions".
  */
-export interface UniversalQuestion {
+export interface SkillUniversalQuestion {
   id: number;
   /**
    * The universal question that prompts this skill
@@ -1140,6 +1117,50 @@ export interface UniversalQuestion {
   skill: number | Skill;
   /**
    * Sort order within the skill (lower numbers appear first)
+   */
+  sort?: number | null;
+  /**
+   * Whether this universal question is currently active
+   */
+  active?: boolean | null;
+  /**
+   * Type of universal question
+   */
+  question_type?: ('open_ended' | 'reflective' | 'analytical' | 'evaluative' | 'creative') | null;
+  /**
+   * Additional context or guidance for using this question
+   */
+  context?: string | null;
+  /**
+   * Suggested follow-up questions to deepen thinking
+   */
+  suggested_followups?:
+    | {
+        followup_question: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Universal questions that prompt concept development
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concept-universal-questions".
+ */
+export interface ConceptUniversalQuestion {
+  id: number;
+  /**
+   * The universal question that prompts this concept
+   */
+  question: string;
+  /**
+   * The concept this question prompts
+   */
+  concept: number | Concept;
+  /**
+   * Sort order within the concept (lower numbers appear first)
    */
   sort?: number | null;
   /**
@@ -1552,12 +1573,16 @@ export interface PayloadLockedDocument {
         value: number | Grade;
       } | null)
     | ({
-        relationTo: 'concepts';
-        value: number | Concept;
+        relationTo: 'common-core-codes';
+        value: number | CommonCoreCode;
       } | null)
     | ({
         relationTo: 'common-core-state-standards';
         value: number | CommonCoreStateStandard;
+      } | null)
+    | ({
+        relationTo: 'concepts';
+        value: number | Concept;
       } | null)
     | ({
         relationTo: 'learning-outcomes';
@@ -1572,8 +1597,12 @@ export interface PayloadLockedDocument {
         value: number | Skill;
       } | null)
     | ({
-        relationTo: 'universal-questions';
-        value: number | UniversalQuestion;
+        relationTo: 'skill-universal-questions';
+        value: number | SkillUniversalQuestion;
+      } | null)
+    | ({
+        relationTo: 'concept-universal-questions';
+        value: number | ConceptUniversalQuestion;
       } | null)
     | ({
         relationTo: 'strategies';
@@ -1989,6 +2018,32 @@ export interface GradesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "common-core-codes_select".
+ */
+export interface CommonCoreCodesSelect<T extends boolean = true> {
+  code_name?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "common-core-state-standards_select".
+ */
+export interface CommonCoreStateStandardsSelect<T extends boolean = true> {
+  code?: T;
+  statement?: T;
+  subject?: T;
+  grade?: T;
+  standard_type?: T;
+  metadata?: T;
+  active?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "concepts_select".
  */
 export interface ConceptsSelect<T extends boolean = true> {
@@ -2005,34 +2060,13 @@ export interface ConceptsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "common-core-state-standards_select".
- */
-export interface CommonCoreStateStandardsSelect<T extends boolean = true> {
-  code?: T;
-  statement?: T;
-  subject?: T;
-  grade?: T;
-  standard_type?: T;
-  domain?: T;
-  metadata?: T;
-  active?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "learning-outcomes_select".
  */
 export interface LearningOutcomesSelect<T extends boolean = true> {
   statement?: T;
   concept?: T;
-  success_criteria?: T;
-  assessment_type?: T;
   sort?: T;
   active?: T;
-  estimated_duration_minutes?: T;
-  difficulty_level?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2045,7 +2079,6 @@ export interface EssentialQuestionsSelect<T extends boolean = true> {
   learning_outcome?: T;
   sort?: T;
   active?: T;
-  context?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2055,23 +2088,40 @@ export interface EssentialQuestionsSelect<T extends boolean = true> {
  */
 export interface SkillsSelect<T extends boolean = true> {
   name?: T;
-  essential_question?: T;
+  concept?: T;
   big_idea?: T;
   sort?: T;
   active?: T;
-  prerequisites?: T;
-  difficulty_level?: T;
-  estimated_hours?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "universal-questions_select".
+ * via the `definition` "skill-universal-questions_select".
  */
-export interface UniversalQuestionsSelect<T extends boolean = true> {
+export interface SkillUniversalQuestionsSelect<T extends boolean = true> {
   question?: T;
   skill?: T;
+  sort?: T;
+  active?: T;
+  question_type?: T;
+  context?: T;
+  suggested_followups?:
+    | T
+    | {
+        followup_question?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concept-universal-questions_select".
+ */
+export interface ConceptUniversalQuestionsSelect<T extends boolean = true> {
+  question?: T;
+  concept?: T;
   sort?: T;
   active?: T;
   question_type?: T;
