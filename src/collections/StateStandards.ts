@@ -13,7 +13,15 @@ export const StateStandards: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'statement',
-    defaultColumns: ['state_code', 'state_name', 'subject', 'grade', 'common_core_state_standard', 'active', 'updatedAt'],
+    defaultColumns: [
+      'state_code',
+      'state_name',
+      'subject',
+      'grade',
+      'common_core_state_standard',
+      'active',
+      'updatedAt',
+    ],
     description: 'State-specific standards that align with Common Core State Standards',
   },
   fields: [

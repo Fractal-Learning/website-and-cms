@@ -1,9 +1,19 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-vercel-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+  // Skip if database already has tables (this means it was created in dev mode)
+  const tablesResult = await db.execute(sql`
+    SELECT table_name FROM information_schema.tables 
+    WHERE table_schema = 'public' AND table_name = 'pages'
+  `)
+
+  if (tablesResult.rows && tablesResult.rows.length > 0) {
+    console.log('Database schema already exists, skipping initial migration')
+    return
+  }
+
   await db.execute(sql`
    CREATE TYPE "public"."enum_pages_hero_links_link_type" AS ENUM('reference', 'custom');
-  CREATE TYPE "public"."enum_pages_hero_links_link_appearance" AS ENUM('default', 'outline');
   CREATE TYPE "public"."enum_pages_blocks_cta_links_link_type" AS ENUM('reference', 'custom');
   CREATE TYPE "public"."enum_pages_blocks_cta_links_link_appearance" AS ENUM('default', 'outline');
   CREATE TYPE "public"."enum_pages_blocks_content_columns_size" AS ENUM('oneThird', 'half', 'twoThirds', 'full');
