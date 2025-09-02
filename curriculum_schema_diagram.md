@@ -72,6 +72,20 @@ erDiagram
         timestamp updated_at
     }
 
+    state_standards {
+        integer id PK
+        varchar state_code
+        text state_name
+        integer subject_id FK
+        integer grade_id FK
+        integer common_core_state_standard_id FK
+        text statement
+        jsonb metadata
+        boolean active
+        timestamp created_at
+        timestamp updated_at
+    }
+
     %% Learning Outcomes Tables
     learning_outcomes {
         integer id PK
@@ -170,6 +184,10 @@ erDiagram
     concepts ||--o{ common_core_state_standards : "many-to-many"
 
     common_core_codes ||--o{ common_core_state_standards : "referenced by"
+
+    subjects ||--o{ state_standards : "has many"
+    grades ||--o{ state_standards : "has many"
+    common_core_state_standards ||--o{ state_standards : "has many"
 
     learning_outcomes ||--o{ essential_questions : "has many"
     learning_outcomes ||--o{ assessments : "has many"

@@ -25,6 +25,7 @@ import { Strategies } from './collections/Strategies'
 import { Subjects } from './collections/Subjects'
 import { SkillUniversalQuestions } from './collections/SkillUniversalQuestions'
 import { ConceptUniversalQuestions } from './collections/ConceptUniversalQuestions'
+import { StateStandards } from './collections/StateStandards'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -99,6 +100,7 @@ export default buildConfig({
     Grades,
     CommonCoreCodes,
     CommonCoreStateStandards,
+    StateStandards,
     Concepts,
     ConceptUniversalQuestions,
     LearningOutcomes,

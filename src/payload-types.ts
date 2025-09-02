@@ -77,6 +77,7 @@ export interface Config {
     grades: Grade;
     'common-core-codes': CommonCoreCode;
     'common-core-state-standards': CommonCoreStateStandard;
+    'state-standards': StateStandard;
     concepts: Concept;
     'concept-universal-questions': ConceptUniversalQuestion;
     'learning-outcomes': LearningOutcome;
@@ -106,6 +107,7 @@ export interface Config {
     grades: GradesSelect<false> | GradesSelect<true>;
     'common-core-codes': CommonCoreCodesSelect<false> | CommonCoreCodesSelect<true>;
     'common-core-state-standards': CommonCoreStateStandardsSelect<false> | CommonCoreStateStandardsSelect<true>;
+    'state-standards': StateStandardsSelect<false> | StateStandardsSelect<true>;
     concepts: ConceptsSelect<false> | ConceptsSelect<true>;
     'concept-universal-questions': ConceptUniversalQuestionsSelect<false> | ConceptUniversalQuestionsSelect<true>;
     'learning-outcomes': LearningOutcomesSelect<false> | LearningOutcomesSelect<true>;
@@ -933,6 +935,57 @@ export interface CommonCoreStateStandard {
   createdAt: string;
 }
 /**
+ * State-specific standards that align with Common Core State Standards
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "state-standards".
+ */
+export interface StateStandard {
+  id: number;
+  /**
+   * Two-letter state code (e.g., "CA", "TX", "NY")
+   */
+  state_code: string;
+  /**
+   * Full state name (e.g., "California", "Texas", "New York")
+   */
+  state_name: string;
+  /**
+   * Academic subject this state standard belongs to
+   */
+  subject: number | Subject;
+  /**
+   * Grade level for this state standard
+   */
+  grade: number | Grade;
+  /**
+   * The Common Core State Standard this state standard aligns with
+   */
+  common_core_state_standard: number | CommonCoreStateStandard;
+  /**
+   * The state-specific standard statement
+   */
+  statement: string;
+  /**
+   * Additional metadata about this state standard
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Whether this state standard is currently active
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "concepts".
  */
@@ -1582,6 +1635,10 @@ export interface PayloadLockedDocument {
         value: number | CommonCoreStateStandard;
       } | null)
     | ({
+        relationTo: 'state-standards';
+        value: number | StateStandard;
+      } | null)
+    | ({
         relationTo: 'concepts';
         value: number | Concept;
       } | null)
@@ -2041,6 +2098,22 @@ export interface CommonCoreStateStandardsSelect<T extends boolean = true> {
   metadata?: T;
   active?: T;
   notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "state-standards_select".
+ */
+export interface StateStandardsSelect<T extends boolean = true> {
+  state_code?: T;
+  state_name?: T;
+  subject?: T;
+  grade?: T;
+  common_core_state_standard?: T;
+  statement?: T;
+  metadata?: T;
+  active?: T;
   updatedAt?: T;
   createdAt?: T;
 }
