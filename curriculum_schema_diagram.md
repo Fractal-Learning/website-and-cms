@@ -76,8 +76,6 @@ erDiagram
         integer id PK
         varchar state_code
         text state_name
-        integer subject_id FK
-        integer grade_id FK
         integer common_core_state_standard_id FK
         text statement
         jsonb metadata
@@ -185,8 +183,6 @@ erDiagram
 
     common_core_codes ||--o{ common_core_state_standards : "referenced by"
 
-    subjects ||--o{ state_standards : "has many"
-    grades ||--o{ state_standards : "has many"
     common_core_state_standards ||--o{ state_standards : "has many"
 
     learning_outcomes ||--o{ essential_questions : "has many"

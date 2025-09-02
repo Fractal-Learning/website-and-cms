@@ -16,8 +16,6 @@ export const StateStandards: CollectionConfig = {
     defaultColumns: [
       'state_code',
       'state_name',
-      'subject',
-      'grade',
       'common_core_state_standard',
       'active',
       'updatedAt',
@@ -42,24 +40,7 @@ export const StateStandards: CollectionConfig = {
         description: 'Full state name (e.g., "California", "Texas", "New York")',
       },
     },
-    {
-      name: 'subject',
-      type: 'relationship',
-      relationTo: 'subjects',
-      required: true,
-      admin: {
-        description: 'Academic subject this state standard belongs to',
-      },
-    },
-    {
-      name: 'grade',
-      type: 'relationship',
-      relationTo: 'grades',
-      required: true,
-      admin: {
-        description: 'Grade level for this state standard',
-      },
-    },
+
     {
       name: 'common_core_state_standard',
       type: 'relationship',
@@ -99,7 +80,7 @@ export const StateStandards: CollectionConfig = {
   // Add indexes for efficient querying
   indexes: [
     {
-      fields: ['state_code', 'subject', 'grade'],
+      fields: ['state_code', 'common_core_state_standard'],
     },
     {
       fields: ['common_core_state_standard'],
