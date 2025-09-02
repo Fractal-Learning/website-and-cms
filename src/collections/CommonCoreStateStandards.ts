@@ -46,6 +46,33 @@ export const CommonCoreStateStandards: CollectionConfig = {
           'Common Core code reference (e.g., "RL.6.3", "6.NS.A.1") - Each code can only be used once',
         isSortable: true,
       },
+      validate: async (value: any, { req, id }: { req: any; id?: string | number }) => {
+        if (!value) return true
+
+        const codeId = typeof value === 'object' ? value.id : value
+        const whereClause = {
+          code: {
+            equals: codeId,
+          },
+          ...(id && {
+            id: {
+              not_equals: id,
+            },
+          }),
+        }
+
+        const existingStandards = await req.payload.find({
+          collection: 'common-core-state-standards',
+          where: whereClause,
+          limit: 1,
+        })
+
+        if (existingStandards.docs.length > 0) {
+          return 'This Common Core code has already been used by another standard. Each code can only be used once.'
+        }
+
+        return true
+      },
     },
     {
       name: 'statement',
