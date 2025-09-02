@@ -10,6 +10,7 @@ import { post1 } from './post-1'
 import { post2 } from './post-2'
 import { post3 } from './post-3'
 import { states as statesData } from './states'
+import { commonCoreCodes as commonCoreCodesData } from './common-core-codes'
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -20,6 +21,7 @@ const collections: CollectionSlug[] = [
   'form-submissions',
   'search',
   'states',
+  'common-core-codes',
 ]
 const globals: GlobalSlug[] = ['header', 'footer']
 
@@ -75,6 +77,21 @@ export const seed = async ({
       payload.create({
         collection: 'states',
         data: state,
+        depth: 0,
+        context: {
+          disableRevalidate: true,
+        },
+      }),
+    ),
+  )
+
+  payload.logger.info(`— Seeding common core codes...`)
+
+  await Promise.all(
+    commonCoreCodesData.map((code) =>
+      payload.create({
+        collection: 'common-core-codes',
+        data: code,
         depth: 0,
         context: {
           disableRevalidate: true,
