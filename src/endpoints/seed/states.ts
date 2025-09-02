@@ -1,13 +1,6 @@
-#!/usr/bin/env tsx
+import type { RequiredDataFromCollectionSlug } from 'payload'
 
-import dotenv from 'dotenv'
-import { getPayload } from 'payload'
-import config from '../src/payload.config'
-
-// Load environment variables
-dotenv.config()
-
-const states = [
+export const states: RequiredDataFromCollectionSlug<'states'>[] = [
   { state_abbreviation: 'AL', state_name: 'Alabama' },
   { state_abbreviation: 'AK', state_name: 'Alaska' },
   { state_abbreviation: 'AZ', state_name: 'Arizona' },
@@ -59,73 +52,3 @@ const states = [
   { state_abbreviation: 'WI', state_name: 'Wisconsin' },
   { state_abbreviation: 'WY', state_name: 'Wyoming' },
 ]
-
-async function seedStates() {
-  console.log('🌱 Starting states seeding process...')
-
-  // Check for required environment variables
-  if (!process.env.PAYLOAD_SECRET) {
-    console.error('❌ Missing PAYLOAD_SECRET environment variable')
-    console.error('   Please make sure your .env file contains PAYLOAD_SECRET')
-    process.exit(1)
-  }
-
-  if (!process.env.POSTGRES_URL) {
-    console.error('❌ Missing POSTGRES_URL environment variable')
-    console.error('   Please make sure your .env file contains POSTGRES_URL')
-    process.exit(1)
-  }
-
-  try {
-    console.log('🔗 Connecting to Payload...')
-    console.log('   Using secret:', process.env.PAYLOAD_SECRET ? '✅ Found' : '❌ Missing')
-    console.log('   Using database:', process.env.POSTGRES_URL ? '✅ Found' : '❌ Missing')
-
-    const payload = await getPayload({ config })
-
-    // Check if states already exist
-    const existingStates = await payload.find({
-      collection: 'states',
-      limit: 1,
-    })
-
-    if (existingStates.totalDocs > 0) {
-      console.log('⚠️  States already exist in the database. Skipping seed.')
-      console.log(`   Found ${existingStates.totalDocs} existing states.`)
-      process.exit(0)
-    }
-
-    console.log('📝 Creating 50 US states...')
-    let successCount = 0
-    let errorCount = 0
-
-    for (const state of states) {
-      try {
-        await payload.create({
-          collection: 'states',
-          data: state,
-        })
-        console.log(`✅ Created: ${state.state_name} (${state.state_abbreviation})`)
-        successCount++
-      } catch (error) {
-        console.error(`❌ Failed to create ${state.state_name}:`, error)
-        errorCount++
-      }
-    }
-
-    console.log('\n🎉 States seeding completed!')
-    console.log(`   ✅ Successfully created: ${successCount} states`)
-    if (errorCount > 0) {
-      console.log(`   ❌ Failed to create: ${errorCount} states`)
-    }
-    console.log(`   📊 Total states in database: ${successCount}`)
-  } catch (error) {
-    console.error('💥 Error during states seeding:', error)
-    process.exit(1)
-  }
-
-  process.exit(0)
-}
-
-// Run the seeding
-seedStates()

@@ -9,6 +9,7 @@ import { imageHero1 } from './image-hero-1'
 import { post1 } from './post-1'
 import { post2 } from './post-2'
 import { post3 } from './post-3'
+import { states as statesData } from './states'
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -18,6 +19,7 @@ const collections: CollectionSlug[] = [
   'forms',
   'form-submissions',
   'search',
+  'states',
 ]
 const globals: GlobalSlug[] = ['header', 'footer']
 
@@ -64,6 +66,21 @@ export const seed = async ({
     collections
       .filter((collection) => Boolean(payload.collections[collection].config.versions))
       .map((collection) => payload.db.deleteVersions({ collection, req, where: {} })),
+  )
+
+  payload.logger.info(`— Seeding states...`)
+
+  await Promise.all(
+    statesData.map((state) =>
+      payload.create({
+        collection: 'states',
+        data: state,
+        depth: 0,
+        context: {
+          disableRevalidate: true,
+        },
+      }),
+    ),
   )
 
   payload.logger.info(`— Seeding demo author and user...`)

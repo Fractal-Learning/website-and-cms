@@ -27,7 +27,7 @@
     "db:start": "docker compose up -d postgres",
     "db:stop": "docker compose stop postgres",
     "db:restart": "docker compose restart postgres",
-    "seed:states": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed-states.ts",
+    "seed:states": "cross-env NODE_OPTIONS=--no-deprecation payload seed",
     "db:logs": "docker compose logs postgres",
     "db:status": "docker compose ps postgres"
   },
