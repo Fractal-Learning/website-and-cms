@@ -11,6 +11,7 @@ import { post2 } from './post-2'
 import { post3 } from './post-3'
 import { states as statesData } from './states'
 import { commonCoreCodes as commonCoreCodesData } from './common-core-codes'
+import { grades as gradesData } from './grades'
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -22,6 +23,7 @@ const collections: CollectionSlug[] = [
   'search',
   'states',
   'common-core-codes',
+  'grades',
 ]
 const globals: GlobalSlug[] = ['header', 'footer']
 
@@ -68,36 +70,6 @@ export const seed = async ({
     collections
       .filter((collection) => Boolean(payload.collections[collection].config.versions))
       .map((collection) => payload.db.deleteVersions({ collection, req, where: {} })),
-  )
-
-  payload.logger.info(`— Seeding states...`)
-
-  await Promise.all(
-    statesData.map((state) =>
-      payload.create({
-        collection: 'states',
-        data: state,
-        depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
-      }),
-    ),
-  )
-
-  payload.logger.info(`— Seeding common core codes...`)
-
-  await Promise.all(
-    commonCoreCodesData.map((code) =>
-      payload.create({
-        collection: 'common-core-codes',
-        data: code,
-        depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
-      }),
-    ),
   )
 
   payload.logger.info(`— Seeding demo author and user...`)
@@ -313,6 +285,51 @@ export const seed = async ({
       data: contactPageData({ contactForm: contactForm }),
     }),
   ])
+
+  payload.logger.info(`— Seeding states...`)
+
+  await Promise.all(
+    statesData.map((state) =>
+      payload.create({
+        collection: 'states',
+        data: state,
+        depth: 0,
+        context: {
+          disableRevalidate: true,
+        },
+      }),
+    ),
+  )
+
+  payload.logger.info(`— Seeding common core codes...`)
+
+  await Promise.all(
+    commonCoreCodesData.map((code) =>
+      payload.create({
+        collection: 'common-core-codes',
+        data: code,
+        depth: 0,
+        context: {
+          disableRevalidate: true,
+        },
+      }),
+    ),
+  )
+
+  payload.logger.info(`— Seeding grades...`)
+
+  await Promise.all(
+    gradesData.map((grade) =>
+      payload.create({
+        collection: 'grades',
+        data: grade,
+        depth: 0,
+        context: {
+          disableRevalidate: true,
+        },
+      }),
+    ),
+  )
 
   payload.logger.info(`— Seeding globals...`)
 

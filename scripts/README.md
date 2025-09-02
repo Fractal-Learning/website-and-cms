@@ -31,6 +31,7 @@ The seed command creates:
 
 - **All 50 US States** with proper abbreviations and full names
 - **Common Core Codes** (RL.6.1-RL.6.10, RL.7.1-RL.7.10, RL.8.1-RL.8.10)
+- **Grades K-12** with proper level codes and names
 - Demo content (posts, pages, media, etc.)
 - Categories
 - Forms
@@ -53,6 +54,14 @@ All 50 US states with their official:
 - **Grade 7**: RL.7.1 through RL.7.10
 - **Grade 8**: RL.8.1 through RL.8.10
 
+#### Grades
+
+All grade levels from Kindergarten through 12th grade:
+
+- **K** - Kindergarten
+- **1-12** - 1st Grade through 12th Grade
+- Each grade includes level code, full name, and sort order
+
 ### File Structure
 
 The seeding system is organized in:
@@ -60,6 +69,7 @@ The seeding system is organized in:
 - `src/endpoints/seed/index.ts` - Main seeding orchestration
 - `src/endpoints/seed/states.ts` - States data definition
 - `src/endpoints/seed/common-core-codes.ts` - Common Core codes data definition
+- `src/endpoints/seed/grades.ts` - Grades data definition
 - `src/endpoints/seed/` - Other demo content (posts, images, etc.)
 
 ### Safety
