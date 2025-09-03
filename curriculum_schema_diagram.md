@@ -147,18 +147,38 @@ erDiagram
         timestamp updated_at
     }
 
-    %% Assessment Tables
-    assessments {
+    concept_universal_questions_suggested_followups {
+        integer id PK
+        integer parent_id FK
+        varchar followup_question
+        integer order
+    }
+
+    skill_universal_questions_suggested_followups {
+        integer id PK
+        integer parent_id FK
+        varchar followup_question
+        integer order
+    }
+
+    %% Teaching Strategies Tables
+    strategies {
         integer id PK
         varchar name
-        text description
-        integer learning_outcome_id FK
-        jsonb questions
-        jsonb rubric
-        numeric time_limit
+        integer skill_id FK
+        jsonb description
+        numeric sort
         boolean active
         timestamp created_at
         timestamp updated_at
+    }
+
+    kid_translations {
+        uuid id PK
+        uuid strategy_id FK UK
+        text translation
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     %% User Management
@@ -194,19 +214,25 @@ erDiagram
     common_core_state_standards ||--o{ state_standards : "has many"
 
     learning_outcomes ||--o{ essential_questions : "has many"
-    learning_outcomes ||--o{ assessments : "has many"
 
     concepts ||--o{ skills : "has many"
 
     skills ||--o{ skill_universal_questions : "has many"
+    skills ||--o{ strategies : "has many"
 
     concepts ||--o{ concept_universal_questions : "has many"
+
+    skill_universal_questions ||--o{ skill_universal_questions_suggested_followups : "has many"
+    concept_universal_questions ||--o{ concept_universal_questions_suggested_followups : "has many"
+
+    strategies ||--|| kid_translations : "has one"
 
     %% Notes
     %% - concepts.subjects: JSONB array of subject IDs
     %% - concepts.common_core_standards: JSONB array of standard IDs
-    %% - learning_outcomes.assessment_type: enum('formative', 'summative', 'diagnostic', 'benchmark')
-    %% - learning_outcomes.difficulty_level: enum('beginner', 'intermediate', 'advanced')
+    %% - strategies.description: JSONB rich text content
+    %% - kid_translations.translation: text field supporting Markdown
+    %% - question_type: enum('open_ended', 'reflective', 'analytical', 'evaluative', 'creative')
     %% - users.role: enum('admin', 'teacher', 'student')
 ```
 
@@ -226,8 +252,8 @@ erDiagram
 
 ### 📊 **Data Flexibility**
 
-- **JSONB fields** for complex relationships (subjects, common_core_standards)
-- **Enum fields** for controlled vocabulary (assessment types, difficulty levels)
+- **JSONB fields** for complex relationships (subjects, common_core_standards, rich text content)
+- **Enum fields** for controlled vocabulary (question types, grade levels, reading levels)
 - **Soft deletion** with `active` boolean flags
 - **Audit trails** with `created_at` and `updated_at` timestamps
 
@@ -242,5 +268,7 @@ This schema supports a comprehensive curriculum management system where educator
 1. **Organize content** by subjects and grade levels
 2. **Create learning outcomes** tied to specific concepts
 3. **Align with standards** using the Common Core reference system
-4. **Build assessments** based on learning outcomes
-5. **Manage relationships** flexibly using JSONB fields
+4. **Develop teaching strategies** for specific skills
+5. **Create student-friendly translations** of teaching strategies in simple, accessible language
+6. **Ask universal questions** to promote deeper thinking about concepts and skills
+7. **Manage relationships** flexibly using JSONB fields
