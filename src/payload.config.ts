@@ -8,25 +8,25 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
-import { CommonCoreCodes } from './collections/CommonCoreCodes'
-import { CommonCoreStateStandards } from './collections/CommonCoreStateStandards'
+import { CommonCoreCodes } from './models/CommonCoreCodes'
+import { CommonCoreStateStandards } from './models/CommonCoreStateStandards'
 
-import { Concepts } from './collections/Concepts'
-import { EssentialQuestions } from './collections/EssentialQuestions'
-import { Grades } from './collections/Grades'
-import { KidTranslations } from './collections/KidTranslations'
-import { LearningOutcomes } from './collections/LearningOutcomes'
+import { Concepts } from './models/Concepts'
+import { EssentialQuestions } from './models/EssentialQuestions'
+import { Grades } from './models/Grades'
+import { KidTranslations } from './models/KidTranslations'
+import { LearningOutcomes } from './models/LearningOutcomes'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
-import { Skills } from './collections/Skills'
-import { StandardTypes } from './collections/StandardTypes'
-import { States } from './collections/States'
-import { Strategies } from './collections/Strategies'
-import { Subjects } from './collections/Subjects'
-import { SkillUniversalQuestions } from './collections/SkillUniversalQuestions'
-import { ConceptUniversalQuestions } from './collections/ConceptUniversalQuestions'
-import { StateStandards } from './collections/StateStandards'
+import { Skills } from './models/Skills'
+import { StandardTypes } from './models/StandardTypes'
+import { States } from './models/States'
+import { Strategies } from './models/Strategies'
+import { Subjects } from './models/Subjects'
+import { SkillUniversalQuestions } from './models/SkillUniversalQuestions'
+import { ConceptUniversalQuestions } from './models/ConceptUniversalQuestions'
+import { StateStandards } from './models/StateStandards'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -86,8 +86,9 @@ export default buildConfig({
             rejectUnauthorized: false,
           },
     },
-    // Disable push mode in production to force migrations
-    push: !isProd,
+    // Use push mode in production if migrations are failing
+    // This will auto-sync the schema without requiring explicit migrations
+    // push: process.env.FORCE_SCHEMA_SYNC === 'true' ? true : !isProd,
   }),
 
   collections: [
@@ -96,21 +97,21 @@ export default buildConfig({
     Media,
     Categories,
     Users,
-    Subjects,
-    StandardTypes,
-    States,
-    Grades,
-    CommonCoreCodes,
-    CommonCoreStateStandards,
-    StateStandards,
-    Concepts,
-    ConceptUniversalQuestions,
-    LearningOutcomes,
-    EssentialQuestions,
-    Skills,
-    SkillUniversalQuestions,
-    Strategies,
-    KidTranslations,
+    // Subjects,
+    // StandardTypes,
+    // States,
+    // Grades,
+    // CommonCoreCodes,
+    // CommonCoreStateStandards,
+    // StateStandards,
+    // Concepts,
+    // ConceptUniversalQuestions,
+    // LearningOutcomes,
+    // EssentialQuestions,
+    // Skills,
+    // SkillUniversalQuestions,
+    // Strategies,
+    // KidTranslations,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
